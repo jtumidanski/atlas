@@ -1,0 +1,114 @@
+version: '3.5'
+services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.Dockerfile
+    networks:
+      - wrg-net
+      - lsrv-net
+      - aos-net
+      - csrv-net
+    ports:
+      - '80:80'
+    expose:
+      - '80'
+    container_name: atlas-nginx
+  db:
+    build:
+      context: .
+      dockerfile: db.Dockerfile
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    environment:
+      MYSQL_ROOT_PASSWORD: the
+      MYSQL_DATABASE: atlas
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    networks:
+      - aos-net
+    container_name: atlas-db
+  wrg:
+    image: atlas-wrg:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8581:5005'
+    environment:
+      WAIT_HOSTS: nginx:80
+    networks:
+      - wrg-net
+    expose:
+      - '8080'
+    container_name: atlas-wrg
+  lsrv:
+    image: atlas-lsrv:latest
+    ports:
+      - '8582:5005'
+      - '8484:8484'
+    networks:
+      - lsrv-net
+    expose:
+      - '8484'
+    container_name: atlas-lsrv
+  aos:
+    image: atlas-aos:latest
+    depends_on:
+      - "nginx"
+      - "db"
+    ports:
+      - '8583:5005'
+    environment:
+      WAIT_HOSTS: db:3306, nginx:80
+    networks:
+      - aos-net
+    expose:
+      - '8080'
+    container_name: atlas-aos
+  csrv-1-1:
+    image: atlas-csrv:latest
+    ports:
+      - '8584:5005'
+      - '7575:7575'
+    environment:
+      WAIT_HOSTS: nginx:80
+      WORLD_ID: 1
+      CHANNEL_ID: 1
+      CHANNEL_PORT: 7575
+    networks:
+      - csrv-net
+    expose:
+      - '7575'
+    container_name: atlas-csrv-1-1
+  csrv-1-2:
+    image: atlas-csrv:latest
+    ports:
+      - '8585:5005'
+      - '7576:7576'
+    environment:
+      WAIT_HOSTS: nginx:80
+      WORLD_ID: 1
+      CHANNEL_ID: 2
+      CHANNEL_PORT: 7576
+    networks:
+      - csrv-net
+    expose:
+      - '7576'
+    container_name: atlas-csrv-1-2
+networks:
+  wrg-net:
+    name: wrg-net
+    driver: bridge
+  lsrv-net:
+    name: lsrv-net
+    driver: bridge
+  aos-net:
+    name: aos-net
+    driver: bridge
+  csrv-net:
+    name: csrv-net
+    driver: bridge
