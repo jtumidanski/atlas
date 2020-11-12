@@ -69,36 +69,36 @@ services:
     expose:
       - '8080'
     container_name: atlas-aos
-  csrv-1-1:
+  csrv-0-1:
     image: atlas-csrv:latest
     ports:
       - '8584:5005'
       - '7575:7575'
     environment:
       WAIT_HOSTS: nginx:80
-      WORLD_ID: 1
+      WORLD_ID: 0
       CHANNEL_ID: 1
       CHANNEL_PORT: 7575
     networks:
       - csrv-net
     expose:
       - '7575'
-    container_name: atlas-csrv-1-1
-  csrv-1-2:
+    container_name: atlas-csrv-0-1
+  csrv-0-2:
     image: atlas-csrv:latest
     ports:
       - '8585:5005'
       - '7576:7576'
     environment:
       WAIT_HOSTS: nginx:80
-      WORLD_ID: 1
+      WORLD_ID: 0
       CHANNEL_ID: 2
       CHANNEL_PORT: 7576
     networks:
       - csrv-net
     expose:
       - '7576'
-    container_name: atlas-csrv-1-2
+    container_name: atlas-csrv-0-2
 networks:
   wrg-net:
     name: wrg-net
