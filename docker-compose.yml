@@ -8,6 +8,7 @@ services:
       - wrg-net
       - lsrv-net
       - aos-net
+      - cos-net
       - csrv-net
     ports:
       - '80:80'
@@ -31,6 +32,7 @@ services:
       - '3306'
     networks:
       - aos-net
+      - cos-net
     container_name: atlas-db
   wrg:
     image: atlas-wrg:latest
@@ -69,10 +71,24 @@ services:
     expose:
       - '8080'
     container_name: atlas-aos
+  cos:
+    image: atlas-cos:latest
+    depends_on:
+      - "nginx"
+      - "db"
+    ports:
+      - '8584:5005'
+    environment:
+      WAIT_HOSTS: db:3306, nginx:80
+    networks:
+      - cos-net
+    expose:
+      - '8080'
+    container_name: atlas-cos
   csrv-0-1:
     image: atlas-csrv:latest
     ports:
-      - '8584:5005'
+      - '8501:5005'
       - '7575:7575'
     environment:
       WAIT_HOSTS: nginx:80
@@ -87,7 +103,7 @@ services:
   csrv-0-2:
     image: atlas-csrv:latest
     ports:
-      - '8585:5005'
+      - '8502:5005'
       - '7576:7576'
     environment:
       WAIT_HOSTS: nginx:80
@@ -108,6 +124,9 @@ networks:
     driver: bridge
   aos-net:
     name: aos-net
+    driver: bridge
+  cos-net:
+    name: cos-net
     driver: bridge
   csrv-net:
     name: csrv-net
