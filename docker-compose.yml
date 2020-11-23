@@ -43,8 +43,11 @@ services:
       - '8581:5005'
     environment:
       WAIT_HOSTS: nginx:80
+      BOOTSTRAP_SERVERS: atlas-kafka:9092
+      TOPIC_CHANNEL_SERVICE: ChannelService
     networks:
       - wrg-net
+      - kafka-net
     expose:
       - '8080'
     container_name: atlas-wrg
@@ -101,6 +104,8 @@ services:
     container_name: atlas-iis
   csrv-0-1:
     image: atlas-csrv:latest
+    depends_on:
+      - "kafka"
     ports:
       - '8501:5005'
       - '7575:7575'
@@ -109,13 +114,19 @@ services:
       WORLD_ID: 0
       CHANNEL_ID: 1
       CHANNEL_PORT: 7575
+      HOST_ADDRESS: 192.168.56.3
+      BOOTSTRAP_SERVERS: atlas-kafka:9092
+      TOPIC_CHANNEL_SERVICE: ChannelService
     networks:
       - csrv-net
+      - kafka-net
     expose:
       - '7575'
     container_name: atlas-csrv-0-1
   csrv-0-2:
     image: atlas-csrv:latest
+    depends_on:
+      - "kafka"
     ports:
       - '8502:5005'
       - '7576:7576'
@@ -124,11 +135,36 @@ services:
       WORLD_ID: 0
       CHANNEL_ID: 2
       CHANNEL_PORT: 7576
+      HOST_ADDRESS: 192.168.56.3
+      BOOTSTRAP_SERVERS: atlas-kafka:9092
+      TOPIC_CHANNEL_SERVICE: ChannelService
     networks:
       - csrv-net
+      - kafka-net
     expose:
       - '7576'
     container_name: atlas-csrv-0-2
+  zookeeper:
+    image: wurstmeister/zookeeper:3.4.6
+    ports:
+     - "2181:2181"
+    networks:
+      - kafka-net
+    container_name: atlas-zookeeper
+  kafka:
+    image: wurstmeister/kafka:2.13-2.6.0
+    expose:
+     - "9092"
+    networks:
+      - kafka-net
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://atlas-kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_CREATE_TOPICS: ChannelService:4:1
+    container_name: atlas-kafka
 networks:
   wrg-net:
     name: wrg-net
@@ -147,4 +183,7 @@ networks:
     driver: bridge
   csrv-net:
     name: csrv-net
+    driver: bridge
+  kafka-net:
+    name: kafka-net
     driver: bridge
