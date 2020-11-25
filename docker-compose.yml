@@ -10,6 +10,7 @@ services:
       - aos-net
       - cos-net
       - iis-net
+      - mis-net
       - csrv-net
     ports:
       - '80:80'
@@ -102,6 +103,19 @@ services:
     expose:
       - '8080'
     container_name: atlas-iis
+  mis:
+    image: atlas-mis:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8586:5005'
+    environment:
+      WAIT_HOSTS: nginx:80
+    networks:
+      - mis-net
+    expose:
+      - '8080'
+    container_name: atlas-mis
   csrv-0-1:
     image: atlas-csrv:latest
     depends_on:
@@ -180,6 +194,9 @@ networks:
     driver: bridge
   iis-net:
     name: iis-net
+    driver: bridge
+  mis-net:
+    name: mis-net
     driver: bridge
   csrv-net:
     name: csrv-net
