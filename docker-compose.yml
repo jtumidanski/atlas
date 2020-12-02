@@ -155,6 +155,7 @@ services:
       TOPIC_ENTER_PORTAL: EnterPortalService
       TOPIC_ENABLE_ACTIONS: EnableActionsService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
+      TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
     networks:
       - csrv-net
     expose:
@@ -178,6 +179,7 @@ services:
       TOPIC_ENTER_PORTAL: EnterPortalService
       TOPIC_ENABLE_ACTIONS: EnableActionsService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
+      TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
     networks:
       - csrv-net
     expose:
