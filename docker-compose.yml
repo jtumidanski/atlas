@@ -49,7 +49,6 @@ services:
       TOPIC_CHANNEL_SERVICE: ChannelService
     networks:
       - wrg-net
-      - kafka-net
     expose:
       - '8080'
     container_name: atlas-wrg
@@ -86,6 +85,9 @@ services:
       - '8584:5005'
     environment:
       WAIT_HOSTS: db:3306, nginx:80
+      BOOTSTRAP_SERVERS: atlas-kafka:9092
+      TOPIC_CHANGE_MAP_COMMAND: ChangeMapCommandService
+      TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
     networks:
       - cos-net
     expose:
@@ -127,9 +129,10 @@ services:
       WAIT_HOSTS: nginx:80
       BOOTSTRAP_SERVERS: atlas-kafka:9092
       TOPIC_ENTER_PORTAL: EnterPortalService
+      TOPIC_ENABLE_ACTIONS: EnableActionsService
+      TOPIC_CHANGE_MAP_COMMAND: ChangeMapCommandService
     networks:
       - pos-net
-      - kafka-net
     expose:
       - '8080'
     container_name: atlas-pos
@@ -149,9 +152,10 @@ services:
       BOOTSTRAP_SERVERS: atlas-kafka:9092
       TOPIC_CHANNEL_SERVICE: ChannelService
       TOPIC_ENTER_PORTAL: EnterPortalService
+      TOPIC_ENABLE_ACTIONS: EnableActionsService
+      TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
     networks:
       - csrv-net
-      - kafka-net
     expose:
       - '7575'
     container_name: atlas-csrv-0-1
@@ -171,9 +175,10 @@ services:
       BOOTSTRAP_SERVERS: atlas-kafka:9092
       TOPIC_CHANNEL_SERVICE: ChannelService
       TOPIC_ENTER_PORTAL: EnterPortalService
+      TOPIC_ENABLE_ACTIONS: EnableActionsService
+      TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
     networks:
       - csrv-net
-      - kafka-net
     expose:
       - '7576'
     container_name: atlas-csrv-0-2
@@ -189,6 +194,10 @@ services:
     expose:
      - "9092"
     networks:
+      - cos-net
+      - pos-net
+      - csrv-net
+      - wrg-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS: INSIDE://atlas-kafka:9092
@@ -196,7 +205,7 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1
+      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1
     container_name: atlas-kafka
 networks:
   wrg-net:
