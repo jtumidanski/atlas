@@ -13,6 +13,7 @@ services:
       - mis-net
       - pos-net
       - csrv-net
+      - mrg-net
     ports:
       - '80:80'
     expose:
@@ -71,6 +72,8 @@ services:
       - '8583:5005'
     environment:
       WAIT_HOSTS: db:3306, nginx:80
+      BOOTSTRAP_SERVERS: atlas-kafka:9092
+      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
     networks:
       - aos-net
     expose:
@@ -89,6 +92,7 @@ services:
       TOPIC_CHANGE_MAP_COMMAND: ChangeMapCommandService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
       TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
+      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
     networks:
       - cos-net
     expose:
@@ -137,6 +141,23 @@ services:
     expose:
       - '8080'
     container_name: atlas-pos
+  mrg:
+    image: atlas-mrg:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8588:5005'
+    environment:
+      WAIT_HOSTS: nginx:80
+      BOOTSTRAP_SERVERS: atlas-kafka:9092
+      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
+      TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
+      TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
+    networks:
+      - mrg-net
+    expose:
+      - '8080'
+    container_name: atlas-mrg
   csrv-0-1:
     image: atlas-csrv:latest
     depends_on:
@@ -156,6 +177,8 @@ services:
       TOPIC_ENABLE_ACTIONS: EnableActionsService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
       TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
+      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
+      TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
     networks:
       - csrv-net
     expose:
@@ -180,6 +203,8 @@ services:
       TOPIC_ENABLE_ACTIONS: EnableActionsService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
       TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
+      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
+      TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
     networks:
       - csrv-net
     expose:
@@ -201,6 +226,8 @@ services:
       - pos-net
       - csrv-net
       - wrg-net
+      - aos-net
+      - mrg-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS: INSIDE://atlas-kafka:9092
@@ -208,7 +235,7 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1
+      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterLoginEventService:4:1,MapCharacterEventService:4:1
     container_name: atlas-kafka
 networks:
   wrg-net:
@@ -231,6 +258,9 @@ networks:
     driver: bridge
   pos-net:
     name: pos-net
+    driver: bridge
+  mrg-net:
+    name: mrg-net
     driver: bridge
   csrv-net:
     name: csrv-net
