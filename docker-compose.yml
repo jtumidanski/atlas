@@ -73,7 +73,7 @@ services:
     environment:
       WAIT_HOSTS: db:3306, nginx:80
       BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
+      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
     networks:
       - aos-net
     expose:
@@ -92,7 +92,7 @@ services:
       TOPIC_CHANGE_MAP_COMMAND: ChangeMapCommandService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
       TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
-      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
+      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
       TOPIC_CHARACTER_MOVEMENT: CharacterMovementEventService
     networks:
       - cos-net
@@ -151,7 +151,7 @@ services:
     environment:
       WAIT_HOSTS: nginx:80
       BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
+      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
       TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
     networks:
@@ -178,9 +178,10 @@ services:
       TOPIC_ENABLE_ACTIONS: EnableActionsService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
       TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
-      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
+      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
       TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
       TOPIC_CHARACTER_MOVEMENT: CharacterMovementEventService
+      TOPIC_CHARACTER_MAP_MESSAGE_EVENT: CharacterMapMessageEventService
     networks:
       - csrv-net
     expose:
@@ -205,9 +206,10 @@ services:
       TOPIC_ENABLE_ACTIONS: EnableActionsService
       TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
       TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
-      TOPIC_CHARACTER_LOGIN: CharacterLoginEventService
+      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
       TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
       TOPIC_CHARACTER_MOVEMENT: CharacterMovementEventService
+      TOPIC_CHARACTER_MAP_MESSAGE_EVENT: CharacterMapMessageEventService
     networks:
       - csrv-net
     expose:
@@ -238,7 +240,7 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterLoginEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1
+      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1
     container_name: atlas-kafka
 networks:
   wrg-net:
