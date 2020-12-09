@@ -14,6 +14,7 @@ services:
       - pos-net
       - csrv-net
       - mrg-net
+      - morg-net
     ports:
       - '80:80'
     expose:
@@ -160,6 +161,21 @@ services:
     expose:
       - '8080'
     container_name: atlas-mrg
+  morg:
+    image: atlas-morg:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8589:5005'
+    environment:
+      WAIT_HOSTS: nginx:80
+      BOOTSTRAP_SERVERS: atlas-kafka:9092
+      TOPIC_MONSTER_EVENT: MonsterService
+    networks:
+      - morg-net
+    expose:
+      - '8080'
+    container_name: atlas-morg
   csrv-0-1:
     image: atlas-csrv:latest
     depends_on:
@@ -184,6 +200,7 @@ services:
       TOPIC_CHARACTER_MOVEMENT: CharacterMovementEventService
       TOPIC_CHARACTER_MAP_MESSAGE_EVENT: CharacterMapMessageEventService
       TOPIC_CHARACTER_CHANGE_CHANNEL_EVENT: CharacterChangeChannelEventService
+      TOPIC_MONSTER_EVENT: MonsterService
     networks:
       - csrv-net
     expose:
@@ -213,6 +230,7 @@ services:
       TOPIC_CHARACTER_MOVEMENT: CharacterMovementEventService
       TOPIC_CHARACTER_MAP_MESSAGE_EVENT: CharacterMapMessageEventService
       TOPIC_CHARACTER_CHANGE_CHANNEL_EVENT: CharacterChangeChannelEventService
+      TOPIC_MONSTER_EVENT: MonsterService
     networks:
       - csrv-net
     expose:
@@ -236,6 +254,7 @@ services:
       - wrg-net
       - aos-net
       - mrg-net
+      - morg-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS: INSIDE://atlas-kafka:9092
@@ -243,7 +262,7 @@ services:
       KAFKA_LISTENERS: INSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1
+      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1,MonsterService:4:1
     container_name: atlas-kafka
 networks:
   wrg-net:
@@ -269,6 +288,9 @@ networks:
     driver: bridge
   mrg-net:
     name: mrg-net
+    driver: bridge
+  morg-net:
+    name: morg-net
     driver: bridge
   csrv-net:
     name: csrv-net
