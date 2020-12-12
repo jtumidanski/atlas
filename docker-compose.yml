@@ -1,9 +1,9 @@
-version: '3.5'
+version:                                    '3.5'
 services:
   nginx:
     build:
-      context: .
-      dockerfile: nginx.Dockerfile
+      context:                              .
+      dockerfile:                           nginx.Dockerfile
     networks:
       - wrg-net
       - lsrv-net
@@ -19,18 +19,18 @@ services:
       - '80:80'
     expose:
       - '80'
-    container_name: atlas-nginx
+    container_name:                         atlas-nginx
   db:
     build:
-      context: .
-      dockerfile: db.Dockerfile
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
+      context:                              .
+      dockerfile:                           db.Dockerfile
+    command:                                --default-authentication-plugin=mysql_native_password
+    restart:                                always
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     environment:
-      MYSQL_ROOT_PASSWORD: the
-      MYSQL_DATABASE: atlas
+      MYSQL_ROOT_PASSWORD:                  the
+      MYSQL_DATABASE:                       atlas
     ports:
       - '3306:3306'
     expose:
@@ -38,24 +38,28 @@ services:
     networks:
       - aos-net
       - cos-net
-    container_name: atlas-db
+    container_name:                         atlas-db
   wrg:
-    image: atlas-wrg:latest
+    image:                                  atlas-wrg:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8581:5005'
     environment:
-      WAIT_HOSTS: nginx:80
-      BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_CHANNEL_SERVICE: ChannelService
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_CHANNEL_SERVICE:                ChannelService
     networks:
       - wrg-net
     expose:
       - '8080'
-    container_name: atlas-wrg
+    container_name:                         atlas-wrg
   lsrv:
-    image: atlas-lsrv:latest
+    image:                                  atlas-lsrv:latest
+    depends_on:
+      - "nginx"
+      - "kafka"
     ports:
       - '8582:5005'
       - '8484:8484'
@@ -63,195 +67,205 @@ services:
       - lsrv-net
     expose:
       - '8484'
-    container_name: atlas-lsrv
+    container_name:                         atlas-lsrv
   aos:
-    image: atlas-aos:latest
+    image:                                  atlas-aos:latest
     depends_on:
       - "nginx"
+      - "kafka"
       - "db"
     ports:
       - '8583:5005'
     environment:
-      WAIT_HOSTS: db:3306, nginx:80
-      BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
+      WAIT_HOSTS:                           db:3306, nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
     networks:
       - aos-net
     expose:
       - '8080'
-    container_name: atlas-aos
+    container_name:                         atlas-aos
   cos:
-    image: atlas-cos:latest
+    image:                                  atlas-cos:latest
     depends_on:
       - "nginx"
+      - "kafka"
       - "db"
     ports:
       - '8584:5005'
     environment:
-      WAIT_HOSTS: db:3306, nginx:80
-      BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_CHANGE_MAP_COMMAND: ChangeMapCommandService
-      TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
-      TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
-      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
-      TOPIC_CHARACTER_MOVEMENT: CharacterMovementEventService
+      WAIT_HOSTS:                           db:3306, nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_CHANGE_MAP_COMMAND:             ChangeMapCommandService
+      TOPIC_CHANGE_MAP_EVENT:               ChangeMapEventService
+      TOPIC_CHARACTER_CREATED_EVENT:        CharacterCreatedEventService
+      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
+      TOPIC_CHARACTER_MOVEMENT:             CharacterMovementEventService
     networks:
       - cos-net
     expose:
       - '8080'
-    container_name: atlas-cos
+    container_name:                         atlas-cos
   iis:
-    image: atlas-iis:latest
+    image:                                  atlas-iis:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8585:5005'
     environment:
-      WAIT_HOSTS: nginx:80
+      WAIT_HOSTS:                           nginx:80
     networks:
       - iis-net
     expose:
       - '8080'
-    container_name: atlas-iis
+    container_name:                         atlas-iis
   mis:
-    image: atlas-mis:latest
+    image:                                  atlas-mis:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8586:5005'
     environment:
-      WAIT_HOSTS: nginx:80
+      WAIT_HOSTS:                           nginx:80
     networks:
       - mis-net
     expose:
       - '8080'
-    container_name: atlas-mis
+    container_name:                         atlas-mis
   pos:
-    image: atlas-pos:latest
+    image:                                  atlas-pos:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8587:5005'
     environment:
-      WAIT_HOSTS: nginx:80
-      BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_ENTER_PORTAL: EnterPortalService
-      TOPIC_ENABLE_ACTIONS: EnableActionsService
-      TOPIC_CHANGE_MAP_COMMAND: ChangeMapCommandService
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_ENTER_PORTAL:                   EnterPortalService
+      TOPIC_ENABLE_ACTIONS:                 EnableActionsService
+      TOPIC_CHANGE_MAP_COMMAND:             ChangeMapCommandService
     networks:
       - pos-net
     expose:
       - '8080'
-    container_name: atlas-pos
+    container_name:                         atlas-pos
   mrg:
-    image: atlas-mrg:latest
+    image:                                  atlas-mrg:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8588:5005'
     environment:
-      WAIT_HOSTS: nginx:80
-      BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
-      TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
-      TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
+      TOPIC_CHANGE_MAP_EVENT:               ChangeMapEventService
+      TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
       TOPIC_CHARACTER_CHANGE_CHANNEL_EVENT: CharacterChangeChannelEventService
     networks:
       - mrg-net
     expose:
       - '8080'
-    container_name: atlas-mrg
+    container_name:                         atlas-mrg
   morg:
-    image: atlas-morg:latest
+    image:                                  atlas-morg:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8589:5005'
     environment:
-      WAIT_HOSTS: nginx:80
-      BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_MONSTER_EVENT: MonsterService
-      TOPIC_MONSTER_MOVEMENT: MonsterMovementService
-      TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
-      TOPIC_CONTROL_MONSTER_EVENT: ControlMonsterService
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_MONSTER_EVENT:                  MonsterService
+      TOPIC_MONSTER_MOVEMENT:               MonsterMovementService
+      TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
+      TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
+      TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
     networks:
       - morg-net
     expose:
       - '8080'
-    container_name: atlas-morg
+    container_name:                         atlas-morg
   csrv-0-1:
-    image: atlas-csrv:latest
+    image:                                  atlas-csrv:latest
     depends_on:
       - "kafka"
     ports:
       - '8501:5005'
       - '7575:7575'
     environment:
-      WAIT_HOSTS: nginx:80
-      WORLD_ID: 0
-      CHANNEL_ID: 1
-      CHANNEL_PORT: 7575
-      HOST_ADDRESS: 192.168.56.3
-      BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_CHANNEL_SERVICE: ChannelService
-      TOPIC_ENTER_PORTAL: EnterPortalService
-      TOPIC_ENABLE_ACTIONS: EnableActionsService
-      TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
-      TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
-      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
-      TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
-      TOPIC_CHARACTER_MOVEMENT: CharacterMovementEventService
-      TOPIC_CHARACTER_MAP_MESSAGE_EVENT: CharacterMapMessageEventService
+      WAIT_HOSTS:                           nginx:80
+      WORLD_ID:                             0
+      CHANNEL_ID:                           1
+      CHANNEL_PORT:                         7575
+      HOST_ADDRESS:                         192.168.56.2
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_CHANNEL_SERVICE:                ChannelService
+      TOPIC_ENTER_PORTAL:                   EnterPortalService
+      TOPIC_ENABLE_ACTIONS:                 EnableActionsService
+      TOPIC_CHANGE_MAP_EVENT:               ChangeMapEventService
+      TOPIC_CHARACTER_CREATED_EVENT:        CharacterCreatedEventService
+      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
+      TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
+      TOPIC_CHARACTER_MOVEMENT:             CharacterMovementEventService
+      TOPIC_CHARACTER_MAP_MESSAGE_EVENT:    CharacterMapMessageEventService
       TOPIC_CHARACTER_CHANGE_CHANNEL_EVENT: CharacterChangeChannelEventService
-      TOPIC_MONSTER_EVENT: MonsterService
-      TOPIC_MONSTER_MOVEMENT: MonsterMovementService
-      TOPIC_CONTROL_MONSTER_EVENT: ControlMonsterService
+      TOPIC_MONSTER_EVENT:                  MonsterService
+      TOPIC_MONSTER_MOVEMENT:               MonsterMovementService
+      TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
+      TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
     networks:
       - csrv-net
     expose:
       - '7575'
-    container_name: atlas-csrv-0-1
+    container_name:                         atlas-csrv-0-1
   csrv-0-2:
-    image: atlas-csrv:latest
+    image:                                  atlas-csrv:latest
     depends_on:
       - "kafka"
     ports:
       - '8502:5005'
       - '7576:7576'
     environment:
-      WAIT_HOSTS: nginx:80
-      WORLD_ID: 0
-      CHANNEL_ID: 2
-      CHANNEL_PORT: 7576
-      HOST_ADDRESS: 192.168.56.3
-      BOOTSTRAP_SERVERS: atlas-kafka:9092
-      TOPIC_CHANNEL_SERVICE: ChannelService
-      TOPIC_ENTER_PORTAL: EnterPortalService
-      TOPIC_ENABLE_ACTIONS: EnableActionsService
-      TOPIC_CHANGE_MAP_EVENT: ChangeMapEventService
-      TOPIC_CHARACTER_CREATED_EVENT: CharacterCreatedEventService
-      TOPIC_CHARACTER_STATUS: CharacterStatusEventService
-      TOPIC_MAP_CHARACTER_EVENT: MapCharacterEventService
-      TOPIC_CHARACTER_MOVEMENT: CharacterMovementEventService
-      TOPIC_CHARACTER_MAP_MESSAGE_EVENT: CharacterMapMessageEventService
+      WAIT_HOSTS:                           nginx:80
+      WORLD_ID:                             0
+      CHANNEL_ID:                           2
+      CHANNEL_PORT:                         7576
+      HOST_ADDRESS:                         192.168.56.2
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_CHANNEL_SERVICE:                ChannelService
+      TOPIC_ENTER_PORTAL:                   EnterPortalService
+      TOPIC_ENABLE_ACTIONS:                 EnableActionsService
+      TOPIC_CHANGE_MAP_EVENT:               ChangeMapEventService
+      TOPIC_CHARACTER_CREATED_EVENT:        CharacterCreatedEventService
+      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
+      TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
+      TOPIC_CHARACTER_MOVEMENT:             CharacterMovementEventService
+      TOPIC_CHARACTER_MAP_MESSAGE_EVENT:    CharacterMapMessageEventService
       TOPIC_CHARACTER_CHANGE_CHANNEL_EVENT: CharacterChangeChannelEventService
-      TOPIC_MONSTER_EVENT: MonsterService
-      TOPIC_MONSTER_MOVEMENT: MonsterMovementService
-      TOPIC_CONTROL_MONSTER_EVENT: ControlMonsterService
+      TOPIC_MONSTER_EVENT:                  MonsterService
+      TOPIC_MONSTER_MOVEMENT:               MonsterMovementService
+      TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
+      TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
     networks:
       - csrv-net
     expose:
       - '7576'
-    container_name: atlas-csrv-0-2
+    container_name:                         atlas-csrv-0-2
   zookeeper:
-    image: wurstmeister/zookeeper:3.4.6
+    image:                                  wurstmeister/zookeeper:3.4.6
     ports:
      - "2181:2181"
     networks:
       - kafka-net
-    container_name: atlas-zookeeper
+    container_name:                         atlas-zookeeper
   kafka:
-    image: wurstmeister/kafka:2.13-2.6.0
+    image:                                  wurstmeister/kafka:2.13-2.6.0
     expose:
      - "9092"
     networks:
@@ -264,44 +278,44 @@ services:
       - morg-net
       - kafka-net
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://atlas-kafka:9092
+      KAFKA_ADVERTISED_LISTENERS:           INSIDE://atlas-kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_CREATE_TOPICS: ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1,MonsterService:4:1,MonsterMovementService:4:1,ControlMonsterService:4:1
-    container_name: atlas-kafka
+      KAFKA_LISTENERS:                      INSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME:     INSIDE
+      KAFKA_ZOOKEEPER_CONNECT:              zookeeper:2181
+      KAFKA_CREATE_TOPICS:                  ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1,MonsterService:4:1,MonsterMovementService:4:1,ControlMonsterService:4:1,MonsterDamageService:4:1
+    container_name:                         atlas-kafka
 networks:
   wrg-net:
-    name: wrg-net
-    driver: bridge
+    name:                                   wrg-net
+    driver:                                 bridge
   lsrv-net:
-    name: lsrv-net
-    driver: bridge
+    name:                                   lsrv-net
+    driver:                                 bridge
   aos-net:
-    name: aos-net
-    driver: bridge
+    name:                                   aos-net
+    driver:                                 bridge
   cos-net:
-    name: cos-net
-    driver: bridge
+    name:                                   cos-net
+    driver:                                 bridge
   iis-net:
-    name: iis-net
-    driver: bridge
+    name:                                   iis-net
+    driver:                                 bridge
   mis-net:
-    name: mis-net
-    driver: bridge
+    name:                                   mis-net
+    driver:                                 bridge
   pos-net:
-    name: pos-net
-    driver: bridge
+    name:                                   pos-net
+    driver:                                 bridge
   mrg-net:
-    name: mrg-net
-    driver: bridge
+    name:                                   mrg-net
+    driver:                                 bridge
   morg-net:
-    name: morg-net
-    driver: bridge
+    name:                                   morg-net
+    driver:                                 bridge
   csrv-net:
-    name: csrv-net
-    driver: bridge
+    name:                                   csrv-net
+    driver:                                 bridge
   kafka-net:
-    name: kafka-net
-    driver: bridge
+    name:                                   kafka-net
+    driver:                                 bridge
