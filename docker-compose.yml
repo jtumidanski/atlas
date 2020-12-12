@@ -15,6 +15,7 @@ services:
       - csrv-net
       - mrg-net
       - morg-net
+      - dis-net
     ports:
       - '80:80'
     expose:
@@ -38,6 +39,7 @@ services:
     networks:
       - aos-net
       - cos-net
+      - dis-net
     container_name:                         atlas-db
   wrg:
     image:                                  atlas-wrg:latest
@@ -191,6 +193,20 @@ services:
     expose:
       - '8080'
     container_name:                         atlas-morg
+  dis:
+    image:                                  atlas-dis:latest
+    depends_on:
+      - "nginx"
+      - "db"
+    ports:
+      - '8590:5005'
+    environment:
+      WAIT_HOSTS:                           db:3306, nginx:80
+    networks:
+      - dis-net
+    expose:
+      - '8080'
+    container_name:                         atlas-dis
   csrv-0-1:
     image:                                  atlas-csrv:latest
     depends_on:
@@ -312,6 +328,9 @@ networks:
     driver:                                 bridge
   morg-net:
     name:                                   morg-net
+    driver:                                 bridge
+  dis-net:
+    name:                                   dis-net
     driver:                                 bridge
   csrv-net:
     name:                                   csrv-net
