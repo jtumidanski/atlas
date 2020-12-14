@@ -104,6 +104,7 @@ services:
       TOPIC_CHARACTER_CREATED_EVENT:        CharacterCreatedEventService
       TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
       TOPIC_CHARACTER_MOVEMENT:             CharacterMovementEventService
+      TOPIC_CHARACTER_EXPERIENCE_EVENT:     CharacterExperienceService
     networks:
       - cos-net
     expose:
@@ -221,6 +222,7 @@ services:
       TOPIC_DROP_EVENT:                     DropService
       TOPIC_MONSTER_EVENT:                  MonsterService
       TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
+      TOPIC_DROP_EXPIRE_EVENT:              DropExpiredService
     networks:
       - drg-net
     expose:
@@ -256,6 +258,8 @@ services:
       TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
       TOPIC_DROP_EVENT:                     DropService
       TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
+      TOPIC_DROP_EXPIRE_EVENT:              DropExpiredService
+      TOPIC_CHARACTER_EXPERIENCE_EVENT:     CharacterExperienceService
     networks:
       - csrv-net
     expose:
@@ -291,6 +295,8 @@ services:
       TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
       TOPIC_DROP_EVENT:                     DropService
       TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
+      TOPIC_DROP_EXPIRE_EVENT:              DropExpiredService
+      TOPIC_CHARACTER_EXPERIENCE_EVENT:     CharacterExperienceService
     networks:
       - csrv-net
     expose:
@@ -323,7 +329,7 @@ services:
       KAFKA_LISTENERS:                      INSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME:     INSIDE
       KAFKA_ZOOKEEPER_CONNECT:              zookeeper:2181
-      KAFKA_CREATE_TOPICS:                  ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1,MonsterService:4:1,MonsterMovementService:4:1,ControlMonsterService:4:1,MonsterDamageService:4:1,DropService:4:1,MonsterKilledService:4:1
+      KAFKA_CREATE_TOPICS:                  ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1,MonsterService:4:1,MonsterMovementService:4:1,ControlMonsterService:4:1,MonsterDamageService:4:1,DropService:4:1,MonsterKilledService:4:1,DropExpiredService:4:1,CharacterExperienceService:4:1
     container_name:                         atlas-kafka
 networks:
   wrg-net:
