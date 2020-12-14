@@ -315,6 +315,7 @@ services:
       - aos-net
       - mrg-net
       - morg-net
+      - drg-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:           INSIDE://atlas-kafka:9092
