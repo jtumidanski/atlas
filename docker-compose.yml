@@ -16,6 +16,7 @@ services:
       - mrg-net
       - morg-net
       - dis-net
+      - drg-net
     ports:
       - '80:80'
     expose:
@@ -188,6 +189,7 @@ services:
       TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
       TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
       TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
+      TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
     networks:
       - morg-net
     expose:
@@ -207,6 +209,23 @@ services:
     expose:
       - '8080'
     container_name:                         atlas-dis
+  drg:
+    image:                                  atlas-drg:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8591:5005'
+    environment:
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      TOPIC_DROP_EVENT:                     DropService
+      TOPIC_MONSTER_EVENT:                  MonsterService
+      TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
+    networks:
+      - drg-net
+    expose:
+      - '8080'
+    container_name:                         atlas-drg
   csrv-0-1:
     image:                                  atlas-csrv:latest
     depends_on:
@@ -235,6 +254,8 @@ services:
       TOPIC_MONSTER_MOVEMENT:               MonsterMovementService
       TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
       TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
+      TOPIC_DROP_EVENT:                     DropService
+      TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
     networks:
       - csrv-net
     expose:
@@ -268,6 +289,8 @@ services:
       TOPIC_MONSTER_MOVEMENT:               MonsterMovementService
       TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
       TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
+      TOPIC_DROP_EVENT:                     DropService
+      TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
     networks:
       - csrv-net
     expose:
@@ -299,7 +322,7 @@ services:
       KAFKA_LISTENERS:                      INSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME:     INSIDE
       KAFKA_ZOOKEEPER_CONNECT:              zookeeper:2181
-      KAFKA_CREATE_TOPICS:                  ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1,MonsterService:4:1,MonsterMovementService:4:1,ControlMonsterService:4:1,MonsterDamageService:4:1
+      KAFKA_CREATE_TOPICS:                  ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1,MonsterService:4:1,MonsterMovementService:4:1,ControlMonsterService:4:1,MonsterDamageService:4:1,DropService:4:1,MonsterKilledService:4:1
     container_name:                         atlas-kafka
 networks:
   wrg-net:
@@ -331,6 +354,9 @@ networks:
     driver:                                 bridge
   dis-net:
     name:                                   dis-net
+    driver:                                 bridge
+  drg-net:
+    name:                                   drg-net
     driver:                                 bridge
   csrv-net:
     name:                                   csrv-net
