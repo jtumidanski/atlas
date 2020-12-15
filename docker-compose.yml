@@ -17,6 +17,7 @@ services:
       - morg-net
       - dis-net
       - drg-net
+      - tds-net
     ports:
       - '80:80'
     expose:
@@ -52,7 +53,6 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_CHANNEL_SERVICE:                ChannelService
     networks:
       - wrg-net
     expose:
@@ -82,7 +82,6 @@ services:
     environment:
       WAIT_HOSTS:                           db:3306, nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
     networks:
       - aos-net
     expose:
@@ -99,13 +98,6 @@ services:
     environment:
       WAIT_HOSTS:                           db:3306, nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_CHANGE_MAP_COMMAND:             ChangeMapCommandService
-      TOPIC_CHANGE_MAP_EVENT:               ChangeMapEventService
-      TOPIC_CHARACTER_CREATED_EVENT:        CharacterCreatedEventService
-      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
-      TOPIC_CHARACTER_MOVEMENT:             CharacterMovementEventService
-      TOPIC_CHARACTER_EXPERIENCE_EVENT:     CharacterExperienceService
-      TOPIC_CHARACTER_LEVEL_EVENT:          CharacterLevelService
     networks:
       - cos-net
     expose:
@@ -149,9 +141,6 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_ENTER_PORTAL:                   EnterPortalService
-      TOPIC_ENABLE_ACTIONS:                 EnableActionsService
-      TOPIC_CHANGE_MAP_COMMAND:             ChangeMapCommandService
     networks:
       - pos-net
     expose:
@@ -167,10 +156,6 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
-      TOPIC_CHANGE_MAP_EVENT:               ChangeMapEventService
-      TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
-      TOPIC_CHARACTER_CHANGE_CHANNEL_EVENT: CharacterChangeChannelEventService
     networks:
       - mrg-net
     expose:
@@ -186,12 +171,6 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_MONSTER_EVENT:                  MonsterService
-      TOPIC_MONSTER_MOVEMENT:               MonsterMovementService
-      TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
-      TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
-      TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
-      TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
     networks:
       - morg-net
     expose:
@@ -220,15 +199,24 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_DROP_EVENT:                     DropService
-      TOPIC_MONSTER_EVENT:                  MonsterService
-      TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
-      TOPIC_DROP_EXPIRE_EVENT:              DropExpiredService
     networks:
       - drg-net
     expose:
       - '8080'
     container_name:                         atlas-drg
+  tds:
+    image:                                  atlas-tds:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8592:5005'
+    environment:
+      WAIT_HOSTS:                           nginx:80
+    networks:
+      - tds-net
+    expose:
+      - '8080'
+    container_name:                         atlas-tds
   csrv-0-1:
     image:                                  atlas-csrv:latest
     depends_on:
@@ -243,25 +231,6 @@ services:
       CHANNEL_PORT:                         7575
       HOST_ADDRESS:                         192.168.56.2
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_CHANNEL_SERVICE:                ChannelService
-      TOPIC_ENTER_PORTAL:                   EnterPortalService
-      TOPIC_ENABLE_ACTIONS:                 EnableActionsService
-      TOPIC_CHANGE_MAP_EVENT:               ChangeMapEventService
-      TOPIC_CHARACTER_CREATED_EVENT:        CharacterCreatedEventService
-      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
-      TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
-      TOPIC_CHARACTER_MOVEMENT:             CharacterMovementEventService
-      TOPIC_CHARACTER_MAP_MESSAGE_EVENT:    CharacterMapMessageEventService
-      TOPIC_CHARACTER_CHANGE_CHANNEL_EVENT: CharacterChangeChannelEventService
-      TOPIC_MONSTER_EVENT:                  MonsterService
-      TOPIC_MONSTER_MOVEMENT:               MonsterMovementService
-      TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
-      TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
-      TOPIC_DROP_EVENT:                     DropService
-      TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
-      TOPIC_DROP_EXPIRE_EVENT:              DropExpiredService
-      TOPIC_CHARACTER_EXPERIENCE_EVENT:     CharacterExperienceService
-      TOPIC_CHARACTER_LEVEL_EVENT:          CharacterLevelService
     networks:
       - csrv-net
     expose:
@@ -281,25 +250,6 @@ services:
       CHANNEL_PORT:                         7576
       HOST_ADDRESS:                         192.168.56.2
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
-      TOPIC_CHANNEL_SERVICE:                ChannelService
-      TOPIC_ENTER_PORTAL:                   EnterPortalService
-      TOPIC_ENABLE_ACTIONS:                 EnableActionsService
-      TOPIC_CHANGE_MAP_EVENT:               ChangeMapEventService
-      TOPIC_CHARACTER_CREATED_EVENT:        CharacterCreatedEventService
-      TOPIC_CHARACTER_STATUS:               CharacterStatusEventService
-      TOPIC_MAP_CHARACTER_EVENT:            MapCharacterEventService
-      TOPIC_CHARACTER_MOVEMENT:             CharacterMovementEventService
-      TOPIC_CHARACTER_MAP_MESSAGE_EVENT:    CharacterMapMessageEventService
-      TOPIC_CHARACTER_CHANGE_CHANNEL_EVENT: CharacterChangeChannelEventService
-      TOPIC_MONSTER_EVENT:                  MonsterService
-      TOPIC_MONSTER_MOVEMENT:               MonsterMovementService
-      TOPIC_CONTROL_MONSTER_EVENT:          ControlMonsterService
-      TOPIC_MONSTER_DAMAGE:                 MonsterDamageService
-      TOPIC_DROP_EVENT:                     DropService
-      TOPIC_MONSTER_KILLED_EVENT:           MonsterKilledService
-      TOPIC_DROP_EXPIRE_EVENT:              DropExpiredService
-      TOPIC_CHARACTER_EXPERIENCE_EVENT:     CharacterExperienceService
-      TOPIC_CHARACTER_LEVEL_EVENT:          CharacterLevelService
     networks:
       - csrv-net
     expose:
@@ -367,6 +317,9 @@ networks:
     driver:                                 bridge
   drg-net:
     name:                                   drg-net
+    driver:                                 bridge
+  tds-net:
+    name:                                   tds-net
     driver:                                 bridge
   csrv-net:
     name:                                   csrv-net
