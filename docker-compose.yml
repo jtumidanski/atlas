@@ -298,7 +298,7 @@ services:
       KAFKA_LISTENERS:                      INSIDE://0.0.0.0:9092
       KAFKA_INTER_BROKER_LISTENER_NAME:     INSIDE
       KAFKA_ZOOKEEPER_CONNECT:              zookeeper:2181
-      KAFKA_CREATE_TOPICS:                  ChannelService:4:1,EnterPortalService:4:1,EnableActionsService:4:1,ChangeMapCommandService:4:1,ChangeMapEventService:4:1,CharacterCreatedEventService:4:1,CharacterStatusEventService:4:1,MapCharacterEventService:4:1,CharacterMovementEventService:4:1,CharacterMapMessageEventService:4:1,CharacterChangeChannelEventService:4:1,MonsterService:4:1,MonsterMovementService:4:1,ControlMonsterService:4:1,MonsterDamageService:4:1,DropService:4:1,MonsterKilledService:4:1,DropExpiredService:4:1,CharacterExperienceService:4:1,CharacterLevelService:4:1,CharacterStatService:4:1,AssignApService:4:1,ReserveDropCommandService:4:1,PickupDropCommandService:4:1,DropReservationService:4:1,PickupDropService:4:1,PickedUpItemService:4:1,PickedUpNxService:4:1,PickedUpMesoService:4:1,CancelDropReservationCommandService:4:1,InventoryModificationService:4:1
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE:      'true'
     container_name:                         atlas-kafka
 networks:
   wrg-net:
