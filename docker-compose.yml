@@ -19,6 +19,7 @@ services:
       - drg-net
       - tds-net
       - eso-net
+      - sis-net
     ports:
       - '80:80'
     expose:
@@ -233,6 +234,19 @@ services:
     expose:
       - '8080'
     container_name:                         atlas-eso
+  sis:
+    image:                                  atlas-sis:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8594:5005'
+    environment:
+      WAIT_HOSTS:                           nginx:80
+    networks:
+      - sis-net
+    expose:
+      - '8080'
+    container_name:                         atlas-sis
   csrv-0-1:
     image:                                  atlas-csrv:latest
     depends_on:
@@ -339,6 +353,9 @@ networks:
     driver:                                 bridge
   eso-net:
     name:                                   eso-net
+    driver:                                 bridge
+  sis-net:
+    name:                                   sis-net
     driver:                                 bridge
   csrv-net:
     name:                                   csrv-net
