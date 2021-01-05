@@ -20,6 +20,7 @@ services:
       - tds-net
       - eso-net
       - sis-net
+      - ncs-net
     ports:
       - '80:80'
     expose:
@@ -247,6 +248,19 @@ services:
     expose:
       - '8080'
     container_name:                         atlas-sis
+  ncs:
+    image:                                  atlas-sis:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8595:5005'
+    environment:
+      WAIT_HOSTS:                           nginx:80
+    networks:
+      - ncs-net
+    expose:
+      - '8080'
+    container_name:                         atlas-ncs
   csrv-0-1:
     image:                                  atlas-csrv:latest
     depends_on:
@@ -356,6 +370,9 @@ networks:
     driver:                                 bridge
   sis-net:
     name:                                   sis-net
+    driver:                                 bridge
+  ncs-net:
+    name:                                   ncs-net
     driver:                                 bridge
   csrv-net:
     name:                                   csrv-net
