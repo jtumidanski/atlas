@@ -249,13 +249,14 @@ services:
       - '8080'
     container_name:                         atlas-sis
   ncs:
-    image:                                  atlas-sis:latest
+    image:                                  atlas-ncs:latest
     depends_on:
       - "nginx"
     ports:
       - '8595:5005'
     environment:
       WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
     networks:
       - ncs-net
     expose:
@@ -319,6 +320,7 @@ services:
       - mrg-net
       - morg-net
       - drg-net
+      - ncs-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:           INSIDE://atlas-kafka:9092
