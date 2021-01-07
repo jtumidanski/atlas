@@ -333,52 +333,35 @@ services:
 networks:
   wrg-net:
     name:                                   wrg-net
-    driver:                                 bridge
   lsrv-net:
     name:                                   lsrv-net
-    driver:                                 bridge
   aos-net:
     name:                                   aos-net
-    driver:                                 bridge
   cos-net:
     name:                                   cos-net
-    driver:                                 bridge
   iis-net:
     name:                                   iis-net
-    driver:                                 bridge
   mis-net:
     name:                                   mis-net
-    driver:                                 bridge
   pos-net:
     name:                                   pos-net
-    driver:                                 bridge
   mrg-net:
     name:                                   mrg-net
-    driver:                                 bridge
   morg-net:
     name:                                   morg-net
-    driver:                                 bridge
   dis-net:
     name:                                   dis-net
-    driver:                                 bridge
   drg-net:
     name:                                   drg-net
-    driver:                                 bridge
   tds-net:
     name:                                   tds-net
-    driver:                                 bridge
   eso-net:
     name:                                   eso-net
-    driver:                                 bridge
   sis-net:
     name:                                   sis-net
-    driver:                                 bridge
   ncs-net:
     name:                                   ncs-net
-    driver:                                 bridge
   csrv-net:
     name:                                   csrv-net
-    driver:                                 bridge
   kafka-net:
     name:                                   kafka-net
-    driver:                                 bridge
