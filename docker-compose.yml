@@ -21,6 +21,7 @@ services:
       - eso-net
       - sis-net
       - ncs-net
+      - cdc-net
     ports:
       - '80:80'
     expose:
@@ -262,6 +263,20 @@ services:
     expose:
       - '8080'
     container_name:                         atlas-ncs
+  cdc:
+    image:                                  atlas-cdc:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8596:5005'
+    environment:
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+    networks:
+      - cdc-net
+    expose:
+      - '8080'
+    container_name:                         atlas-cdc
   csrv-0-1:
     image:                                  atlas-csrv:latest
     depends_on:
@@ -321,6 +336,7 @@ services:
       - morg-net
       - drg-net
       - ncs-net
+      - cdc-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:           INSIDE://atlas-kafka:9092
@@ -361,6 +377,8 @@ networks:
     name:                                   sis-net
   ncs-net:
     name:                                   ncs-net
+  cdc-net:
+    name:                                   cdc-net
   csrv-net:
     name:                                   csrv-net
   kafka-net:
