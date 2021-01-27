@@ -6,7 +6,7 @@ services:
       dockerfile:                           nginx.Dockerfile
     networks:
       - wrg-net
-      - lsrv-net
+      - clc-net
       - aos-net
       - cos-net
       - iis-net
@@ -53,6 +53,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8581:5005'
     environment:
@@ -63,19 +64,18 @@ services:
     expose:
       - '8080'
     container_name:                         atlas-wrg
-  lsrv:
-    image:                                  atlas-lsrv:latest
+  clc:
+    image:                                  atlas-clc:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
-      - '8582:5005'
       - '8484:8484'
     networks:
-      - lsrv-net
+      - clc-net
     expose:
       - '8484'
-    container_name:                         atlas-lsrv
+    container_name:                         atlas-clc
   aos:
     image:                                  atlas-aos:latest
     depends_on:
@@ -152,12 +152,12 @@ services:
       - '8080'
     container_name:                         atlas-pos
   mrg:
-    image:                                  atlas-mrg:latest
+    image:                                  atlas-marg:latest
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
-      - '8588:5005'
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
@@ -171,6 +171,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8589:5005'
     environment:
@@ -349,8 +350,8 @@ services:
 networks:
   wrg-net:
     name:                                   wrg-net
-  lsrv-net:
-    name:                                   lsrv-net
+  clc-net:
+    name:                                   clc-net
   aos-net:
     name:                                   aos-net
   cos-net:
