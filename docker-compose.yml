@@ -71,6 +71,8 @@ services:
       - "kafka"
     ports:
       - '8484:8484'
+    environment:
+      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
     networks:
       - clc-net
     expose:
@@ -342,6 +344,7 @@ services:
       - drg-net
       - ncs-net
       - cdc-net
+      - clc-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
