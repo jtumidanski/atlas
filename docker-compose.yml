@@ -22,6 +22,7 @@ services:
       - sis-net
       - ncs-net
       - cdc-net
+      - bns-net
     ports:
       - '80:80'
     expose:
@@ -69,6 +70,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "bns"
     ports:
       - '8484:8484'
     environment:
@@ -280,6 +282,19 @@ services:
     expose:
       - '8080'
     container_name:                          atlas-cdc
+  bns:
+    image:                               atlas-bns:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8597:5005'
+    environment:
+      WAIT_HOSTS:                        nginx:80
+    networks:
+      - bns-net
+    expose:
+      - '8080'
+    container_name:                      atlas-bns
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -387,6 +402,8 @@ networks:
     name:                                    ncs-net
   cdc-net:
     name:                                    cdc-net
+  bns-net:
+    name:                                    bns-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:
