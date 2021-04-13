@@ -23,6 +23,7 @@ services:
       - ncs-net
       - cdc-net
       - bns-net
+      - fec-net
     ports:
       - '80:80'
     expose:
@@ -204,6 +205,7 @@ services:
     image:                                   atlas-drg:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8591:5005'
     environment:
@@ -258,6 +260,7 @@ services:
     image:                                   atlas-ncs:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8595:5005'
     environment:
@@ -272,6 +275,7 @@ services:
     image:                                   atlas-cdc:latest
     depends_on:
       - "nginx"
+      - "kafka"
     ports:
       - '8596:5005'
     environment:
@@ -283,18 +287,33 @@ services:
       - '8080'
     container_name:                          atlas-cdc
   bns:
-    image:                               atlas-bns:latest
+    image:                                   atlas-bns:latest
     depends_on:
       - "nginx"
     ports:
       - '8597:5005'
     environment:
-      WAIT_HOSTS:                        nginx:80
+      WAIT_HOSTS:                            nginx:80
     networks:
       - bns-net
     expose:
       - '8080'
-    container_name:                      atlas-bns
+    container_name:                          atlas-bns
+  fec:
+    image:                                   atlas-fec:latest
+    depends_on:
+      - "nginx"
+      - "kafka"
+    ports:
+      - '8598:5005'
+    environment:
+      WAIT_HOSTS:                            nginx:80
+      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+    networks:
+      - fec-net
+    expose:
+      - '8080'
+    container_name:                          atlas-fec
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -404,6 +423,8 @@ networks:
     name:                                    cdc-net
   bns-net:
     name:                                    bns-net
+  fec-net:
+    name:                                    fec-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:
