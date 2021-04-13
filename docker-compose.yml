@@ -379,6 +379,7 @@ services:
       - ncs-net
       - cdc-net
       - clc-net
+      - fec-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
