@@ -108,6 +108,7 @@ services:
     environment:
       WAIT_HOSTS:                            db:3306, nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
     networks:
       - cos-net
     expose:
@@ -266,6 +267,7 @@ services:
     environment:
       WAIT_HOSTS:                            nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
     networks:
       - ncs-net
     expose:
@@ -328,6 +330,7 @@ services:
       CHANNEL_ID:                            1
       CHANNEL_PORT:                          7575
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
     networks:
       - csrv-net
     expose:
@@ -349,6 +352,7 @@ services:
       CHANNEL_ID:                            2
       CHANNEL_PORT:                          7576
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
     networks:
       - csrv-net
     expose:
