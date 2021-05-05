@@ -24,6 +24,7 @@ services:
       - cdc-net
       - bns-net
       - fec-net
+      - csc-net
     ports:
       - '80:80'
     expose:
@@ -316,6 +317,22 @@ services:
     expose:
       - '8080'
     container_name:                          atlas-fec
+  csc:
+    image:                                   atlas-csc:latest
+    depends_on:
+      - "nginx"
+      - "kafka"
+    ports:
+      - '8599:5005'
+    environment:
+      WAIT_HOSTS:                            nginx:80
+      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
+    networks:
+      - csc-net
+    expose:
+      - '8080'
+    container_name:                          atlas-csc
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -384,6 +401,7 @@ services:
       - cdc-net
       - clc-net
       - fec-net
+      - csc-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
@@ -430,6 +448,8 @@ networks:
     name:                                    bns-net
   fec-net:
     name:                                    fec-net
+  csc-net:
+    name:                                    csc-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:
