@@ -25,6 +25,7 @@ services:
       - bns-net
       - fec-net
       - csc-net
+      - mdc-net
     ports:
       - '80:80'
     expose:
@@ -154,6 +155,7 @@ services:
     environment:
       WAIT_HOSTS:                            nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
     networks:
       - pos-net
     expose:
@@ -333,6 +335,22 @@ services:
     expose:
       - '8080'
     container_name:                          atlas-csc
+  mdc:
+    image:                                   atlas-mdc:latest
+    depends_on:
+      - "nginx"
+      - "kafka"
+    ports:
+      - '8600:5005'
+    environment:
+      WAIT_HOSTS:                            nginx:80
+      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
+    networks:
+      - mdc-net
+    expose:
+      - '8080'
+    container_name:                          atlas-mdc
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -450,6 +468,8 @@ networks:
     name:                                    fec-net
   csc-net:
     name:                                    csc-net
+  mdc-net:
+    name:                                    mdc-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:
