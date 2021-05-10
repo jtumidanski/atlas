@@ -420,6 +420,7 @@ services:
       - clc-net
       - fec-net
       - csc-net
+      - mdc-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
