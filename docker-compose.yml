@@ -440,6 +440,7 @@ services:
       - fec-net
       - csc-net
       - mdc-net
+      - cks-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
