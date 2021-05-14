@@ -27,6 +27,7 @@ services:
       - csc-net
       - mdc-net
       - cks-net
+      - nss-net
     ports:
       - '80:80'
     expose:
@@ -53,6 +54,7 @@ services:
       - dis-net
       - eso-net
       - cks-net
+      - nss-net
     container_name:                          atlas-db
   wrg:
     image:                                   atlas-wrg:latest
@@ -370,6 +372,21 @@ services:
     expose:
       - '8080'
     container_name:                          atlas-cks
+  nss:
+    image:                                   atlas-nss:latest
+    depends_on:
+      - "nginx"
+      - "db"
+    ports:
+      - '8602:5005'
+    environment:
+      WAIT_HOSTS:                            db:3306, nginx:80
+      LOG_LEVEL:                             debug
+    networks:
+      - nss-net
+    expose:
+      - '8080'
+    container_name:                          atlas-nss
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -493,6 +510,8 @@ networks:
     name:                                    mdc-net
   cks-net:
     name:                                    cks-net
+  nss-net:
+    name:                                    nss-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:
