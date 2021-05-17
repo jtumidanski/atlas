@@ -28,6 +28,7 @@ services:
       - mdc-net
       - cks-net
       - nss-net
+      - cac-net
     ports:
       - '80:80'
     expose:
@@ -387,6 +388,21 @@ services:
     expose:
       - '8080'
     container_name:                          atlas-nss
+  cac:
+    image:                                   atlas-cac:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8603:5005'
+    environment:
+      WAIT_HOSTS:                            nginx:80
+      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
+    networks:
+      - cac-net
+    expose:
+      - '8080'
+    container_name:                          atlas-cac
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -458,6 +474,7 @@ services:
       - csc-net
       - mdc-net
       - cks-net
+      - cac-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
@@ -512,6 +529,8 @@ networks:
     name:                                    cks-net
   nss-net:
     name:                                    nss-net
+  cac-net:
+    name:                                    cac-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:
