@@ -29,6 +29,7 @@ services:
       - cks-net
       - nss-net
       - cac-net
+      - cts-net
     ports:
       - '80:80'
     expose:
@@ -42,6 +43,7 @@ services:
     restart:                                 always
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ../mysql:/var/lib/mysql
     environment:
       MYSQL_ROOT_PASSWORD:                   the
       MYSQL_DATABASE:                        atlas
@@ -111,7 +113,7 @@ services:
       - "kafka"
       - "db"
     ports:
-      - '8584:5005'
+      - '8584:40000'
     environment:
       WAIT_HOSTS:                            db:3306, nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
@@ -216,10 +218,11 @@ services:
       - "nginx"
       - "kafka"
     ports:
-      - '8591:5005'
+      - '8591:40000'
     environment:
       WAIT_HOSTS:                            nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
     networks:
       - drg-net
     expose:
@@ -271,7 +274,7 @@ services:
       - "nginx"
       - "kafka"
     ports:
-      - '8595:5005'
+      - '8595:40000'
     environment:
       WAIT_HOSTS:                            nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
@@ -403,6 +406,21 @@ services:
     expose:
       - '8080'
     container_name:                          atlas-cac
+  cts:
+    image:                                   atlas-cts:latest
+    depends_on:
+      - "nginx"
+    ports:
+      - '8604:5005'
+    environment:
+      WAIT_HOSTS:                            nginx:80
+      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
+    networks:
+      - cts-net
+    expose:
+      - '8080'
+    container_name:                          atlas-cts
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -411,7 +429,7 @@ services:
     ports:
       - '7575:7575'
     environment:
-      HOST_ADDRESS:                         192.168.56.2
+      HOST_ADDRESS:                          192.168.56.16
       WAIT_HOSTS:                            nginx:80, kafka:9092
       WORLD_ID:                              0
       CHANNEL_ID:                            1
@@ -433,7 +451,7 @@ services:
     ports:
       - '7576:7576'
     environment:
-      HOST_ADDRESS:                         192.168.56.2
+      HOST_ADDRESS:                          192.168.56.16
       WAIT_HOSTS:                            nginx:80, kafka:9092
       WORLD_ID:                              0
       CHANNEL_ID:                            2
@@ -475,6 +493,7 @@ services:
       - mdc-net
       - cks-net
       - cac-net
+      - cts-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
@@ -531,6 +550,8 @@ networks:
     name:                                    nss-net
   cac-net:
     name:                                    cac-net
+  cts-net:
+    name:                                    cts-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:

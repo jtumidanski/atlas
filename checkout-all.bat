@@ -1,6 +1,6 @@
 @ECHO OFF
 
-set list="aos" "bns" "cac" "cdc" "cks" "clc" "cos" "csc" "dis" "drg" "eso" "fec" "iis" "marg" "mdc" "mis" "morg" "ncs" "nss" "pos" "sis" "tds" "wcc" "wrg"
+set list="aos" "bns" "cac" "cdc" "cks" "clc" "cos" "csc" "cts" "dis" "drg" "eso" "fec" "iis" "marg" "mdc" "mis" "morg" "ncs" "nss" "pos" "sis" "tds" "wcc" "wrg"
 
 cd ..
 (for %%a in (%list%) do (
