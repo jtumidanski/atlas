@@ -266,6 +266,7 @@ services:
       - '8594:5005'
     environment:
       WAIT_HOSTS:                            nginx:80
+      WZ_DIR:                                /wz
     networks:
       - sis-net
     expose:
