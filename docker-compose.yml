@@ -150,6 +150,7 @@ services:
       - '8586:5005'
     environment:
       WAIT_HOSTS:                            nginx:80
+      WZ_DIR:                                /wz
     networks:
       - mis-net
     expose:
