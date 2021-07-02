@@ -32,6 +32,7 @@ services:
       - nss-net
       - cac-net
       - cts-net
+      - ros-net
     ports:
       - '80:80'
     expose:
@@ -61,6 +62,7 @@ services:
       - eso-net
       - cks-net
       - nss-net
+      - ros-net
     container_name:                          atlas-db
   wrg:
     image:                                   atlas-wrg:latest
@@ -426,6 +428,24 @@ services:
     expose:
       - '8080'
     container_name:                          atlas-cts
+  ros:
+    image:                                   atlas-ros:latest
+    depends_on:
+      - "nginx"
+      - "kafka"
+      - "db"
+    ports:
+      - '8605:5005'
+    environment:
+      WAIT_HOSTS:                            db:3306, nginx:80
+      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
+      WZ_DIR:                                /wz
+    networks:
+      - ros-net
+    expose:
+      - '8080'
+    container_name:                          atlas-ros
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -501,6 +521,7 @@ services:
       - cks-net
       - cac-net
       - cts-net
+      - ros-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
@@ -606,6 +627,8 @@ networks:
     name:                                    cac-net
   cts-net:
     name:                                    cts-net
+  ros-net:
+    name:                                    ros-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:
