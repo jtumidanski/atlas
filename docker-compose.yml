@@ -33,6 +33,7 @@ services:
       - cac-net
       - cts-net
       - ros-net
+      - party-net
     ports:
       - '80:80'
     expose:
@@ -75,6 +76,7 @@ services:
     environment:
       WAIT_HOSTS:                            nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
     networks:
       - wrg-net
     expose:
@@ -159,7 +161,7 @@ services:
       - "nginx"
       - "kafka"
     ports:
-      - '8586:5005'
+      - '8586:40000'
     environment:
       WAIT_HOSTS:                            nginx:80
       WZ_DIR:                                /wz
@@ -193,10 +195,11 @@ services:
     environment:
       WAIT_HOSTS:                            nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
     networks:
       - mrg-net
-    expose:
-      - '8080'
+    ports:
+      - '8588:40000'
     container_name:                          atlas-mrg
   morg:
     image:                                   atlas-morg:latest
@@ -465,12 +468,13 @@ services:
       - "kafka"
       - "db"
     ports:
-      - '8605:5005'
+      - '8605:40000'
     environment:
       WAIT_HOSTS:                            db:3306, nginx:80
       BOOTSTRAP_SERVERS:                     atlas-kafka:9092
       LOG_LEVEL:                             debug
       WZ_DIR:                                /wz
+      DROP_DIR:                              /data/drops
       DB_USER:                               root
       DB_PASSWORD:                           the
       DB_HOST:                               atlas-db
@@ -481,6 +485,22 @@ services:
     expose:
       - '8080'
     container_name:                          atlas-ros
+  party:
+    image:                                   atlas-party:latest
+    depends_on:
+      - "nginx"
+      - "kafka"
+    ports:
+      - '8606:40000'
+    environment:
+      WAIT_HOSTS:                            nginx:80
+      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      LOG_LEVEL:                             debug
+    networks:
+      - party-net
+    expose:
+      - '8080'
+    container_name:                          atlas-party
   csrv-0-1:
     image:                                   atlas-wcc:latest
     depends_on:
@@ -557,6 +577,7 @@ services:
       - cac-net
       - cts-net
       - ros-net
+      - party-net
       - kafka-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
@@ -664,6 +685,8 @@ networks:
     name:                                    cts-net
   ros-net:
     name:                                    ros-net
+  party-net:
+    name:                                    party-net
   csrv-net:
     name:                                    csrv-net
   kafka-net:
