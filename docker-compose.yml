@@ -1,11 +1,11 @@
-version:                                     '3.5'
+version:                                    '3.5'
 services:
   nginx:
     build:
-      context:                               .
-      dockerfile:                            nginx.Dockerfile
+      context:                              .
+      dockerfile:                           nginx.Dockerfile
     environment:
-      LOGSPOUT:                              ignore
+      LOGSPOUT:                             ignore
     networks:
       - wrg-net
       - clc-net
@@ -38,20 +38,20 @@ services:
       - '80:80'
     expose:
       - '80'
-    container_name:                          atlas-nginx
+    container_name:                         atlas-nginx
   db:
     build:
-      context:                               .
-      dockerfile:                            db.Dockerfile
-    command:                                 --default-authentication-plugin=mysql_native_password
-    restart:                                 always
+      context:                              .
+      dockerfile:                           db.Dockerfile
+    command:                                --default-authentication-plugin=mysql_native_password
+    restart:                                always
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
       - ../mysql:/var/lib/mysql
     environment:
-      MYSQL_ROOT_PASSWORD:                   the
-      MYSQL_DATABASE:                        atlas
-      LOGSPOUT:                              ignore
+      MYSQL_ROOT_PASSWORD:                  the
+      MYSQL_DATABASE:                       atlas
+      LOGSPOUT:                             ignore
     ports:
       - '3306:3306'
     expose:
@@ -64,9 +64,9 @@ services:
       - cks-net
       - nss-net
       - ros-net
-    container_name:                          atlas-db
+    container_name:                         atlas-db
   wrg:
-    image:                                   atlas-wrg:latest
+    image:                                  atlas-wrg:latest
     depends_on:
       - "nginx"
       - "kafka"
@@ -74,16 +74,16 @@ services:
     ports:
       - '8581:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - wrg-net
     expose:
       - '8080'
-    container_name:                          atlas-wrg
+    container_name:                         atlas-wrg
   clc:
-    image:                                   atlas-clc:latest
+    image:                                  atlas-clc:latest
     depends_on:
       - "nginx"
       - "kafka"
@@ -91,14 +91,15 @@ services:
     ports:
       - '8484:8484'
     environment:
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - clc-net
     expose:
       - '8484'
-    container_name:                          atlas-clc
+    container_name:                         atlas-clc
   aos:
-    image:                                   atlas-aos:latest
+    image:                                  atlas-aos:latest
     depends_on:
       - "nginx"
       - "kafka"
@@ -106,20 +107,20 @@ services:
     ports:
       - '8583:40000'
     environment:
-      WAIT_HOSTS:                            db:3306, nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      DB_USER:                               root
-      DB_PASSWORD:                           the
-      DB_HOST:                               atlas-db
-      DB_PORT:                               3306
-      DB_NAME:                               atlas-aos
+      WAIT_HOSTS:                           db:3306, nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-aos
     networks:
       - aos-net
     expose:
       - '8080'
-    container_name:                          atlas-aos
+    container_name:                         atlas-aos
   cos:
-    image:                                   atlas-cos:latest
+    image:                                  atlas-cos:latest
     depends_on:
       - "nginx"
       - "kafka"
@@ -127,82 +128,82 @@ services:
     ports:
       - '8584:40000'
     environment:
-      WAIT_HOSTS:                            db:3306, nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
-      DB_USER:                               root
-      DB_PASSWORD:                           the
-      DB_HOST:                               atlas-db
-      DB_PORT:                               3306
-      DB_NAME:                               atlas-cos
+      WAIT_HOSTS:                           db:3306, nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-cos
     networks:
       - cos-net
     expose:
       - '8080'
-    container_name:                          atlas-cos
+    container_name:                         atlas-cos
   iis:
-    image:                                   atlas-iis:latest
+    image:                                  atlas-iis:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8585:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      WZ_DIR:                                /wz
+      WAIT_HOSTS:                           nginx:80
+      WZ_DIR:                               /wz
     networks:
       - iis-net
     expose:
       - '8080'
-    container_name:                          atlas-iis
+    container_name:                         atlas-iis
   mis:
-    image:                                   atlas-mis:latest
+    image:                                  atlas-mis:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8586:40000'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      WZ_DIR:                                /wz
+      WAIT_HOSTS:                           nginx:80
+      WZ_DIR:                               /wz
     networks:
       - mis-net
     expose:
       - '8080'
-    container_name:                          atlas-mis
+    container_name:                         atlas-mis
   pos:
-    image:                                   atlas-pos:latest
+    image:                                  atlas-pos:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8587:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - pos-net
     expose:
       - '8080'
-    container_name:                          atlas-pos
+    container_name:                         atlas-pos
   mrg:
-    image:                                   atlas-marg:latest
+    image:                                  atlas-marg:latest
     depends_on:
       - "nginx"
       - "kafka"
       - "tds"
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - mrg-net
     ports:
       - '8588:40000'
-    container_name:                          atlas-mrg
+    container_name:                         atlas-mrg
   morg:
-    image:                                   atlas-morg:latest
+    image:                                  atlas-morg:latest
     depends_on:
       - "nginx"
       - "kafka"
@@ -210,187 +211,187 @@ services:
     ports:
       - '8589:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
     networks:
       - morg-net
     expose:
       - '8080'
-    container_name:                          atlas-morg
+    container_name:                         atlas-morg
   dis:
-    image:                                   atlas-dis:latest
+    image:                                  atlas-dis:latest
     depends_on:
       - "nginx"
       - "db"
     ports:
       - '8590:5005'
     environment:
-      WAIT_HOSTS:                            db:3306, nginx:80
-      DB_USER:                               root
-      DB_PASSWORD:                           the
-      DB_HOST:                               atlas-db
-      DB_PORT:                               3306
-      DB_NAME:                               atlas-dis
+      WAIT_HOSTS:                           db:3306, nginx:80
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-dis
     networks:
       - dis-net
     expose:
       - '8080'
-    container_name:                          atlas-dis
+    container_name:                         atlas-dis
   drg:
-    image:                                   atlas-drg:latest
+    image:                                  atlas-drg:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8591:40000'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - drg-net
     expose:
       - '8080'
-    container_name:                          atlas-drg
+    container_name:                         atlas-drg
   tds:
-    image:                                   atlas-tds:latest
+    image:                                  atlas-tds:latest
     depends_on:
       - "nginx"
     ports:
       - '8592:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
+      WAIT_HOSTS:                           nginx:80
     networks:
       - tds-net
     expose:
       - '8080'
-    container_name:                          atlas-tds
+    container_name:                         atlas-tds
   eso:
-    image:                                   atlas-eso:latest
+    image:                                  atlas-eso:latest
     depends_on:
       - "nginx"
       - "db"
     ports:
       - '8593:40000'
     environment:
-      WAIT_HOSTS:                            db:3306, nginx:80
-      DB_USER:                               root
-      DB_PASSWORD:                           the
-      DB_HOST:                               atlas-db
-      DB_PORT:                               3306
-      DB_NAME:                               atlas-eso
+      WAIT_HOSTS:                           db:3306, nginx:80
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-eso
     networks:
       - eso-net
     expose:
       - '8080'
-    container_name:                          atlas-eso
+    container_name:                         atlas-eso
   sis:
-    image:                                   atlas-sis:latest
+    image:                                  atlas-sis:latest
     depends_on:
       - "nginx"
     ports:
       - '8594:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      WZ_DIR:                                /wz
+      WAIT_HOSTS:                           nginx:80
+      WZ_DIR:                               /wz
     networks:
       - sis-net
     expose:
       - '8080'
-    container_name:                          atlas-sis
+    container_name:                         atlas-sis
   ncs:
-    image:                                   atlas-ncs:latest
+    image:                                  atlas-ncs:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8595:40000'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - ncs-net
     expose:
       - '8080'
-    container_name:                          atlas-ncs
+    container_name:                         atlas-ncs
   cdc:
-    image:                                   atlas-cdc:latest
+    image:                                  atlas-cdc:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8596:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
     networks:
       - cdc-net
     expose:
       - '8080'
-    container_name:                          atlas-cdc
+    container_name:                         atlas-cdc
   bns:
-    image:                                   atlas-bns:latest
+    image:                                  atlas-bns:latest
     depends_on:
       - "nginx"
     ports:
       - '8597:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
+      WAIT_HOSTS:                           nginx:80
     networks:
       - bns-net
     expose:
       - '8080'
-    container_name:                          atlas-bns
+    container_name:                         atlas-bns
   fec:
-    image:                                   atlas-fec:latest
+    image:                                  atlas-fec:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8598:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
     networks:
       - fec-net
     expose:
       - '8080'
-    container_name:                          atlas-fec
+    container_name:                         atlas-fec
   csc:
-    image:                                   atlas-csc:latest
+    image:                                  atlas-csc:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8599:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - csc-net
     expose:
       - '8080'
-    container_name:                          atlas-csc
+    container_name:                         atlas-csc
   mdc:
-    image:                                   atlas-mdc:latest
+    image:                                  atlas-mdc:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8600:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - mdc-net
     expose:
       - '8080'
-    container_name:                          atlas-mdc
+    container_name:                         atlas-mdc
   cks:
-    image:                                   atlas-cks:latest
+    image:                                  atlas-cks:latest
     depends_on:
       - "nginx"
       - "kafka"
@@ -398,71 +399,71 @@ services:
     ports:
       - '8601:5005'
     environment:
-      WAIT_HOSTS:                            db:3306, nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
-      DB_USER:                               root
-      DB_PASSWORD:                           the
-      DB_HOST:                               atlas-db
-      DB_PORT:                               3306
-      DB_NAME:                               atlas-cks
+      WAIT_HOSTS:                           db:3306, nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-cks
     networks:
       - cks-net
     expose:
       - '8080'
-    container_name:                          atlas-cks
+    container_name:                         atlas-cks
   nss:
-    image:                                   atlas-nss:latest
+    image:                                  atlas-nss:latest
     depends_on:
       - "nginx"
       - "db"
     ports:
       - '8602:5005'
     environment:
-      WAIT_HOSTS:                            db:3306, nginx:80
-      LOG_LEVEL:                             debug
-      DB_USER:                               root
-      DB_PASSWORD:                           the
-      DB_HOST:                               atlas-db
-      DB_PORT:                               3306
-      DB_NAME:                               atlas-nss
+      WAIT_HOSTS:                           db:3306, nginx:80
+      LOG_LEVEL:                            debug
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-nss
     networks:
       - nss-net
     expose:
       - '8080'
-    container_name:                          atlas-nss
+    container_name:                         atlas-nss
   cac:
-    image:                                   atlas-cac:latest
+    image:                                  atlas-cac:latest
     depends_on:
       - "nginx"
     ports:
       - '8603:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - cac-net
     expose:
       - '8080'
-    container_name:                          atlas-cac
+    container_name:                         atlas-cac
   cts:
-    image:                                   atlas-cts:latest
+    image:                                  atlas-cts:latest
     depends_on:
       - "nginx"
     ports:
       - '8604:5005'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - cts-net
     expose:
       - '8080'
-    container_name:                          atlas-cts
+    container_name:                         atlas-cts
   ros:
-    image:                                   atlas-ros:latest
+    image:                                  atlas-ros:latest
     depends_on:
       - "nginx"
       - "kafka"
@@ -470,90 +471,90 @@ services:
     ports:
       - '8605:40000'
     environment:
-      WAIT_HOSTS:                            db:3306, nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
-      WZ_DIR:                                /wz
-      DROP_DIR:                              /data/drops
-      DB_USER:                               root
-      DB_PASSWORD:                           the
-      DB_HOST:                               atlas-db
-      DB_PORT:                               3306
-      DB_NAME:                               atlas-ros
+      WAIT_HOSTS:                           db:3306, nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
+      WZ_DIR:                               /wz
+      DROP_DIR:                             /data/drops
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-ros
     networks:
       - ros-net
     expose:
       - '8080'
-    container_name:                          atlas-ros
+    container_name:                         atlas-ros
   party:
-    image:                                   atlas-party:latest
+    image:                                  atlas-party:latest
     depends_on:
       - "nginx"
       - "kafka"
     ports:
       - '8606:40000'
     environment:
-      WAIT_HOSTS:                            nginx:80
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - party-net
     expose:
       - '8080'
-    container_name:                          atlas-party
+    container_name:                         atlas-party
   csrv-0-1:
-    image:                                   atlas-wcc:latest
+    image:                                  atlas-wcc:latest
     depends_on:
       - "kafka"
       - "tds"
     ports:
       - '7575:7575'
     environment:
-      HOST_ADDRESS:                          192.168.56.16
-      WAIT_HOSTS:                            nginx:80, kafka:9092
-      WORLD_ID:                              0
-      CHANNEL_ID:                            1
-      CHANNEL_PORT:                          7575
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      HOST_ADDRESS:                         192.168.56.16
+      WAIT_HOSTS:                           nginx:80, kafka:9092
+      WORLD_ID:                             0
+      CHANNEL_ID:                           1
+      CHANNEL_PORT:                         7575
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - csrv-net
     expose:
       - '7575'
-    container_name:                          atlas-csrv-0-1
+    container_name:                         atlas-csrv-0-1
     security_opt:
       - seccomp:unconfined
   csrv-0-2:
-    image:                                   atlas-wcc:latest
+    image:                                  atlas-wcc:latest
     depends_on:
       - "kafka"
       - "tds"
     ports:
       - '7576:7576'
     environment:
-      HOST_ADDRESS:                          192.168.56.16
-      WAIT_HOSTS:                            nginx:80, kafka:9092
-      WORLD_ID:                              0
-      CHANNEL_ID:                            2
-      CHANNEL_PORT:                          7576
-      BOOTSTRAP_SERVERS:                     atlas-kafka:9092
-      LOG_LEVEL:                             debug
+      HOST_ADDRESS:                         192.168.56.16
+      WAIT_HOSTS:                           nginx:80, kafka:9092
+      WORLD_ID:                             0
+      CHANNEL_ID:                           2
+      CHANNEL_PORT:                         7576
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
     networks:
       - csrv-net
     expose:
       - '7576'
-    container_name:                          atlas-csrv-0-2
+    container_name:                         atlas-csrv-0-2
   zookeeper:
-    image:                                   wurstmeister/zookeeper:3.4.6
+    image:                                  wurstmeister/zookeeper:3.4.6
     ports:
      - "2181:2181"
     networks:
       - kafka-net
     environment:
-      LOGSPOUT:                              ignore
-    container_name:                          atlas-zookeeper
+      LOGSPOUT:                             ignore
+    container_name:                         atlas-zookeeper
   kafka:
-    image:                                   wurstmeister/kafka:2.13-2.6.0
+    image:                                  wurstmeister/kafka:2.13-2.6.0
     ports:
       - '9092:9092'
     expose:
@@ -580,36 +581,36 @@ services:
       - party-net
       - kafka-net
     environment:
-      KAFKA_ADVERTISED_LISTENERS:            INSIDE://atlas-kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP:  INSIDE:PLAINTEXT
-      KAFKA_LISTENERS:                       INSIDE://0.0.0.0:9092
-      KAFKA_INTER_BROKER_LISTENER_NAME:      INSIDE
-      KAFKA_ZOOKEEPER_CONNECT:               zookeeper:2181
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE:       'true'
-      LOGSPOUT:                              ignore
-    container_name:                          atlas-kafka
+      KAFKA_ADVERTISED_LISTENERS:           INSIDE://atlas-kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
+      KAFKA_LISTENERS:                      INSIDE://0.0.0.0:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME:     INSIDE
+      KAFKA_ZOOKEEPER_CONNECT:              zookeeper:2181
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE:      'true'
+      LOGSPOUT:                             ignore
+    container_name:                         atlas-kafka
   elasticsearch:
-    image:                                   elasticsearch:1.5.2
+    image:                                  elasticsearch:1.5.2
     ports:
       - '9200:9200'
       - '9300:9300'
     environment:
-      LOGSPOUT:                              ignore
-    container_name:                          atlas-elasticsearch
+      LOGSPOUT:                             ignore
+    container_name:                         atlas-elasticsearch
   kibana:
-    image:                                   kibana:4.1.2
+    image:                                  kibana:4.1.2
     links:
       - elasticsearch
     environment:
-        ELASTICSEARCH_URL:                   http://elasticsearch:9200
-        LOGSPOUT:                            ignore
+        ELASTICSEARCH_URL:                  http://elasticsearch:9200
+        LOGSPOUT:                           ignore
     ports:
       - '5601:5601'
     depends_on:
       - elasticsearch
-    container_name:                          atlas-kibana
+    container_name:                         atlas-kibana
   logstash:
-    image:                                   logstash:2.1.1
+    image:                                  logstash:2.1.1
     environment:
       - STDOUT=true
       - LOGSPOUT=ignore
@@ -620,11 +621,11 @@ services:
        - kibana
     volumes:
       - ./logstash.conf:/etc/logstash/conf.d/logstash.conf:ro
-    command:                                 'logstash -f /etc/logstash/conf.d/logstash.conf'
-    container_name:                          atlas-logstash
+    command:                                'logstash -f /etc/logstash/conf.d/logstash.conf'
+    container_name:                         atlas-logstash
   logspout:
-    image:                                   gliderlabs/logspout:v3
-    command:                                 'udp://logstash:5000'
+    image:                                  gliderlabs/logspout:v3
+    command:                                'udp://logstash:5000'
     links:
       - logstash
     volumes:
@@ -633,61 +634,69 @@ services:
       - elasticsearch
       - logstash
       - kibana
-    container_name:                          atlas-logspout
+    container_name:                         atlas-logspout
+  jaeger:
+    container_name:                         atlas-jaeger
+    image:                                  jaegertracing/all-in-one:latest
+    networks:
+      - clc-net
+    ports:
+      - 16686:16686
+      - 14269:14269
 networks:
   wrg-net:
-    name:                                    wrg-net
+    name:                                   wrg-net
   clc-net:
-    name:                                    clc-net
+    name:                                   clc-net
   aos-net:
-    name:                                    aos-net
+    name:                                   aos-net
   cos-net:
-    name:                                    cos-net
+    name:                                   cos-net
   iis-net:
-    name:                                    iis-net
+    name:                                   iis-net
   mis-net:
-    name:                                    mis-net
+    name:                                   mis-net
   pos-net:
-    name:                                    pos-net
+    name:                                   pos-net
   mrg-net:
-    name:                                    mrg-net
+    name:                                   mrg-net
   morg-net:
-    name:                                    morg-net
+    name:                                   morg-net
   dis-net:
-    name:                                    dis-net
+    name:                                   dis-net
   drg-net:
-    name:                                    drg-net
+    name:                                   drg-net
   tds-net:
-    name:                                    tds-net
+    name:                                   tds-net
   eso-net:
-    name:                                    eso-net
+    name:                                   eso-net
   sis-net:
-    name:                                    sis-net
+    name:                                   sis-net
   ncs-net:
-    name:                                    ncs-net
+    name:                                   ncs-net
   cdc-net:
-    name:                                    cdc-net
+    name:                                   cdc-net
   bns-net:
-    name:                                    bns-net
+    name:                                   bns-net
   fec-net:
-    name:                                    fec-net
+    name:                                   fec-net
   csc-net:
-    name:                                    csc-net
+    name:                                   csc-net
   mdc-net:
-    name:                                    mdc-net
+    name:                                   mdc-net
   cks-net:
-    name:                                    cks-net
+    name:                                   cks-net
   nss-net:
-    name:                                    nss-net
+    name:                                   nss-net
   cac-net:
-    name:                                    cac-net
+    name:                                   cac-net
   cts-net:
-    name:                                    cts-net
+    name:                                   cts-net
   ros-net:
-    name:                                    ros-net
+    name:                                   ros-net
   party-net:
-    name:                                    party-net
+    name:                                   party-net
   csrv-net:
-    name:                                    csrv-net
+    name:                                   csrv-net
   kafka-net:
-    name:                                    kafka-net
+    name:                                   kafka-net
