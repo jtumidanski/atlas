@@ -114,6 +114,7 @@ services:
       DB_HOST:                              atlas-db
       DB_PORT:                              3306
       DB_NAME:                              atlas-aos
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - aos-net
     expose:
@@ -640,6 +641,7 @@ services:
     container_name:                         atlas-jaeger
     image:                                  jaegertracing/all-in-one:latest
     networks:
+      - aos-net
       - tds-net
       - clc-net
     ports:
