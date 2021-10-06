@@ -327,6 +327,7 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - cdc-net
     expose:
@@ -646,6 +647,7 @@ services:
       - aos-net
       - bns-net
       - cac-net
+      - cdc-net
       - tds-net
       - clc-net
     ports:
