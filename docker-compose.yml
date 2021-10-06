@@ -445,6 +445,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - cac-net
     expose:
@@ -644,6 +645,7 @@ services:
     networks:
       - aos-net
       - bns-net
+      - cac-net
       - tds-net
       - clc-net
     ports:
