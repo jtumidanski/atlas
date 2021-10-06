@@ -261,6 +261,7 @@ services:
       - '8592:5005'
     environment:
       WAIT_HOSTS:                           nginx:80
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - tds-net
     expose:
@@ -639,6 +640,7 @@ services:
     container_name:                         atlas-jaeger
     image:                                  jaegertracing/all-in-one:latest
     networks:
+      - tds-net
       - clc-net
     ports:
       - 16686:16686
