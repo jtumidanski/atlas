@@ -77,6 +77,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - wrg-net
     expose:
@@ -137,6 +138,7 @@ services:
       DB_HOST:                              atlas-db
       DB_PORT:                              3306
       DB_NAME:                              atlas-cos
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - cos-net
     expose:
@@ -152,6 +154,7 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       WZ_DIR:                               /wz
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - iis-net
     expose:
@@ -167,6 +170,7 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       WZ_DIR:                               /wz
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - mis-net
     expose:
@@ -183,6 +187,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - pos-net
     expose:
@@ -198,6 +203,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - mrg-net
     ports:
@@ -214,6 +220,7 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - morg-net
     expose:
@@ -233,6 +240,7 @@ services:
       DB_HOST:                              atlas-db
       DB_PORT:                              3306
       DB_NAME:                              atlas-dis
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - dis-net
     expose:
@@ -249,6 +257,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - drg-net
     expose:
@@ -282,6 +291,7 @@ services:
       DB_HOST:                              atlas-db
       DB_PORT:                              3306
       DB_NAME:                              atlas-eso
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - eso-net
     expose:
@@ -296,6 +306,7 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       WZ_DIR:                               /wz
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - sis-net
     expose:
@@ -312,6 +323,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - ncs-net
     expose:
@@ -357,6 +369,7 @@ services:
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - fec-net
     expose:
@@ -373,6 +386,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - csc-net
     expose:
@@ -389,6 +403,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - mdc-net
     expose:
@@ -411,6 +426,7 @@ services:
       DB_HOST:                              atlas-db
       DB_PORT:                              3306
       DB_NAME:                              atlas-cks
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - cks-net
     expose:
@@ -431,6 +447,7 @@ services:
       DB_HOST:                              atlas-db
       DB_PORT:                              3306
       DB_NAME:                              atlas-nss
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - nss-net
     expose:
@@ -462,6 +479,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - cts-net
     expose:
@@ -486,6 +504,7 @@ services:
       DB_HOST:                              atlas-db
       DB_PORT:                              3306
       DB_NAME:                              atlas-ros
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - ros-net
     expose:
@@ -502,6 +521,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - party-net
     expose:
@@ -522,6 +542,7 @@ services:
       CHANNEL_PORT:                         7575
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - csrv-net
     expose:
@@ -544,6 +565,7 @@ services:
       CHANNEL_PORT:                         7576
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
       - csrv-net
     expose:
@@ -648,8 +670,29 @@ services:
       - bns-net
       - cac-net
       - cdc-net
-      - tds-net
+      - cks-net
       - clc-net
+      - cos-net
+      - csc-net
+      - cts-net
+      - dis-net
+      - drg-net
+      - eso-net
+      - fec-net
+      - iis-net
+      - mrg-net
+      - mdc-net
+      - mis-net
+      - morg-net
+      - ncs-net
+      - nss-net
+      - party-net
+      - pos-net
+      - ros-net
+      - sis-net
+      - tds-net
+      - wcc-net
+      - wrg-net
     ports:
       - 16686:16686
       - 14269:14269
