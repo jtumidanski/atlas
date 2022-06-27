@@ -1,4 +1,4 @@
-array=("aos" "bns" "cac" "cdc" "cks" "clc" "cos" "csc" "cts" "dis" "drg" "eso" "fec" "iis" "marg" "mdc" "mis" "morg" "ncs" "nss" "party" "pos" "ros" "sis" "tds" "wcc" "wrg")
+array=("aos" "bns" "cac" "cashshop" "cdc" "cks" "clc" "cos" "csc" "cts" "dis" "drg" "eso" "fec" "iis" "marg" "mdc" "mis" "morg" "ncs" "nss" "party" "pos" "quest" "ros" "sis" "tds" "wcc" "wrg")
 
 cd ..
 for OUTPUT in "${array[@]}"

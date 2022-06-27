@@ -7,33 +7,7 @@ services:
     environment:
       LOGSPOUT:                             ignore
     networks:
-      - wrg-net
-      - clc-net
-      - aos-net
-      - cos-net
-      - iis-net
-      - mis-net
-      - pos-net
-      - csrv-net
-      - mrg-net
-      - morg-net
-      - dis-net
-      - drg-net
-      - tds-net
-      - eso-net
-      - sis-net
-      - ncs-net
-      - cdc-net
-      - bns-net
-      - fec-net
-      - csc-net
-      - mdc-net
-      - cks-net
-      - nss-net
-      - cac-net
-      - cts-net
-      - ros-net
-      - party-net
+      - internal-net
     ports:
       - '80:80'
     expose:
@@ -57,13 +31,7 @@ services:
     expose:
       - '3306'
     networks:
-      - aos-net
-      - cos-net
-      - dis-net
-      - eso-net
-      - cks-net
-      - nss-net
-      - ros-net
+      - internal-net
     container_name:                         atlas-db
   wrg:
     image:                                  atlas-wrg:latest
@@ -72,14 +40,14 @@ services:
       - "kafka"
       - "tds"
     ports:
-      - '8581:5005'
+      - '8581:40000'
     environment:
       WAIT_HOSTS:                           nginx:80
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - wrg-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-wrg
@@ -88,14 +56,16 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
       - "bns"
     ports:
       - '8484:8484'
     environment:
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - clc-net
+      - internal-net
     expose:
       - '8484'
     container_name:                         atlas-clc
@@ -104,6 +74,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
       - "db"
     ports:
       - '8583:40000'
@@ -117,7 +88,7 @@ services:
       DB_NAME:                              atlas-aos
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - aos-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-aos
@@ -126,6 +97,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
       - "db"
     ports:
       - '8584:40000'
@@ -140,7 +112,7 @@ services:
       DB_NAME:                              atlas-cos
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - cos-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-cos
@@ -149,6 +121,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8585:5005'
     environment:
@@ -156,7 +129,7 @@ services:
       WZ_DIR:                               /wz
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - iis-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-iis
@@ -165,6 +138,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8586:40000'
     environment:
@@ -172,7 +146,7 @@ services:
       WZ_DIR:                               /wz
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - mis-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-mis
@@ -181,6 +155,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8587:5005'
     environment:
@@ -189,7 +164,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - pos-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-pos
@@ -205,7 +180,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - mrg-net
+      - internal-net
     ports:
       - '8588:40000'
     container_name:                         atlas-mrg
@@ -222,7 +197,7 @@ services:
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - morg-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-morg
@@ -242,7 +217,7 @@ services:
       DB_NAME:                              atlas-dis
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - dis-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-dis
@@ -251,6 +226,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8591:40000'
     environment:
@@ -259,7 +235,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - drg-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-drg
@@ -273,7 +249,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - tds-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-tds
@@ -293,7 +269,7 @@ services:
       DB_NAME:                              atlas-eso
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - eso-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-eso
@@ -308,7 +284,7 @@ services:
       WZ_DIR:                               /wz
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - sis-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-sis
@@ -317,6 +293,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8595:40000'
     environment:
@@ -325,7 +302,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - ncs-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-ncs
@@ -334,6 +311,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8596:5005'
     environment:
@@ -341,7 +319,7 @@ services:
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - cdc-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-cdc
@@ -355,7 +333,7 @@ services:
       WAIT_HOSTS:                           nginx:80
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - bns-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-bns
@@ -364,6 +342,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8598:5005'
     environment:
@@ -371,7 +350,7 @@ services:
       BOOTSTRAP_SERVERS:                    atlas-kafka:9092
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - fec-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-fec
@@ -380,6 +359,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8599:5005'
     environment:
@@ -388,7 +368,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - csc-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-csc
@@ -397,6 +377,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8600:5005'
     environment:
@@ -405,7 +386,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - mdc-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-mdc
@@ -414,6 +395,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
       - "db"
     ports:
       - '8601:5005'
@@ -428,7 +410,7 @@ services:
       DB_NAME:                              atlas-cks
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - cks-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-cks
@@ -449,7 +431,7 @@ services:
       DB_NAME:                              atlas-nss
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - nss-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-nss
@@ -457,6 +439,8 @@ services:
     image:                                  atlas-cac:latest
     depends_on:
       - "nginx"
+      - "kafka"
+      - "tds"
     ports:
       - '8603:5005'
     environment:
@@ -465,7 +449,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - cac-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-cac
@@ -473,6 +457,8 @@ services:
     image:                                  atlas-cts:latest
     depends_on:
       - "nginx"
+      - "kafka"
+      - "tds"
     ports:
       - '8604:5005'
     environment:
@@ -481,7 +467,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - cts-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-cts
@@ -490,6 +476,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
       - "db"
     ports:
       - '8605:40000'
@@ -506,7 +493,7 @@ services:
       DB_NAME:                              atlas-ros
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - ros-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-ros
@@ -515,6 +502,7 @@ services:
     depends_on:
       - "nginx"
       - "kafka"
+      - "tds"
     ports:
       - '8606:40000'
     environment:
@@ -523,19 +511,71 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - party-net
+      - internal-net
     expose:
       - '8080'
     container_name:                         atlas-party
+  quest:
+    image:                                  atlas-quest:latest
+    depends_on:
+      - "nginx"
+      - "kafka"
+      - "tds"
+      - "db"
+    ports:
+      - '8607:40000'
+    environment:
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
+      WZ_DIR:                               /wz
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-quest
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
+    networks:
+      - internal-net
+    expose:
+      - '8080'
+    container_name:                         atlas-quest
+  cashshop:
+    image:                                  atlas-cashshop:latest
+    depends_on:
+      - "nginx"
+      - "kafka"
+      - "tds"
+      - "db"
+    ports:
+      - '8608:40000'
+    environment:
+      WAIT_HOSTS:                           nginx:80
+      BOOTSTRAP_SERVERS:                    atlas-kafka:9092
+      LOG_LEVEL:                            debug
+      DB_USER:                              root
+      DB_PASSWORD:                          the
+      DB_HOST:                              atlas-db
+      DB_PORT:                              3306
+      DB_NAME:                              atlas-cashshop
+      WZ_DIR:                               /wz
+      JAEGER_HOST_PORT:                     atlas-jaeger:6831
+    networks:
+      - internal-net
+    expose:
+      - '8080'
+    container_name:                         atlas-cashshop
   csrv-0-1:
     image:                                  atlas-wcc:latest
     depends_on:
+      - "nginx"
       - "kafka"
       - "tds"
+      - "wrg"
     ports:
       - '7575:7575'
     environment:
-      HOST_ADDRESS:                         192.168.56.16
+      HOST_ADDRESS:                         192.168.1.123
       WAIT_HOSTS:                           nginx:80, kafka:9092
       WORLD_ID:                             0
       CHANNEL_ID:                           1
@@ -544,21 +584,21 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - csrv-net
+      - internal-net
     expose:
       - '7575'
     container_name:                         atlas-csrv-0-1
-    security_opt:
-      - seccomp:unconfined
   csrv-0-2:
     image:                                  atlas-wcc:latest
     depends_on:
+      - "nginx"
       - "kafka"
       - "tds"
+      - "wrg"
     ports:
       - '7576:7576'
     environment:
-      HOST_ADDRESS:                         192.168.56.16
+      HOST_ADDRESS:                         192.168.1.123
       WAIT_HOSTS:                           nginx:80, kafka:9092
       WORLD_ID:                             0
       CHANNEL_ID:                           2
@@ -567,7 +607,7 @@ services:
       LOG_LEVEL:                            debug
       JAEGER_HOST_PORT:                     atlas-jaeger:6831
     networks:
-      - csrv-net
+      - internal-net
     expose:
       - '7576'
     container_name:                         atlas-csrv-0-2
@@ -576,37 +616,18 @@ services:
     ports:
      - "2181:2181"
     networks:
-      - kafka-net
+      - internal-net
     environment:
       LOGSPOUT:                             ignore
     container_name:                         atlas-zookeeper
   kafka:
-    image:                                  wurstmeister/kafka:2.13-2.6.0
+    image:                                  wurstmeister/kafka:2.13-2.8.1
     ports:
       - '9092:9092'
     expose:
      - "9092"
     networks:
-      - cos-net
-      - pos-net
-      - csrv-net
-      - wrg-net
-      - aos-net
-      - mrg-net
-      - morg-net
-      - drg-net
-      - ncs-net
-      - cdc-net
-      - clc-net
-      - fec-net
-      - csc-net
-      - mdc-net
-      - cks-net
-      - cac-net
-      - cts-net
-      - ros-net
-      - party-net
-      - kafka-net
+      - internal-net
     environment:
       KAFKA_ADVERTISED_LISTENERS:           INSIDE://atlas-kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT
@@ -616,16 +637,41 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE:      'true'
       LOGSPOUT:                             ignore
     container_name:                         atlas-kafka
+  kafka-ui:
+    image: provectuslabs/kafka-ui:latest
+    networks:
+      - internal-net
+    depends_on:
+      - "kafka"
+    ports:
+      - 19000:8080
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092
+    container_name:                         atlas-kafka-ui
   elasticsearch:
-    image:                                  elasticsearch:1.5.2
+    image:                                  elasticsearch:7.14.2
     ports:
       - '9200:9200'
       - '9300:9300'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
     environment:
-      LOGSPOUT:                             ignore
+      - cluster.name=es-docker
+      - node.name=node1
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - LOGSPOUT=ignore
+      - discovery.type=single-node
+    mem_limit: 4g
     container_name:                         atlas-elasticsearch
   kibana:
-    image:                                  kibana:4.1.2
+    image:                                  kibana:7.14.2
     links:
       - elasticsearch
     environment:
@@ -637,7 +683,7 @@ services:
       - elasticsearch
     container_name:                         atlas-kibana
   logstash:
-    image:                                  logstash:2.1.1
+    image:                                  logstash:7.14.2
     environment:
       - STDOUT=true
       - LOGSPOUT=ignore
@@ -651,7 +697,7 @@ services:
     command:                                'logstash -f /etc/logstash/conf.d/logstash.conf'
     container_name:                         atlas-logstash
   logspout:
-    image:                                  gliderlabs/logspout:v3
+    image:                                  gliderlabs/logspout:v3.2.13
     command:                                'udp://logstash:5000'
     links:
       - logstash
@@ -666,90 +712,10 @@ services:
     container_name:                         atlas-jaeger
     image:                                  jaegertracing/all-in-one:latest
     networks:
-      - aos-net
-      - bns-net
-      - cac-net
-      - cdc-net
-      - cks-net
-      - clc-net
-      - cos-net
-      - csc-net
-      - cts-net
-      - dis-net
-      - drg-net
-      - eso-net
-      - fec-net
-      - iis-net
-      - mrg-net
-      - mdc-net
-      - mis-net
-      - morg-net
-      - ncs-net
-      - nss-net
-      - party-net
-      - pos-net
-      - ros-net
-      - sis-net
-      - tds-net
-      - wcc-net
-      - wrg-net
+      - internal-net
     ports:
       - 16686:16686
       - 14269:14269
 networks:
-  wrg-net:
-    name:                                   wrg-net
-  clc-net:
-    name:                                   clc-net
-  aos-net:
-    name:                                   aos-net
-  cos-net:
-    name:                                   cos-net
-  iis-net:
-    name:                                   iis-net
-  mis-net:
-    name:                                   mis-net
-  pos-net:
-    name:                                   pos-net
-  mrg-net:
-    name:                                   mrg-net
-  morg-net:
-    name:                                   morg-net
-  dis-net:
-    name:                                   dis-net
-  drg-net:
-    name:                                   drg-net
-  tds-net:
-    name:                                   tds-net
-  eso-net:
-    name:                                   eso-net
-  sis-net:
-    name:                                   sis-net
-  ncs-net:
-    name:                                   ncs-net
-  cdc-net:
-    name:                                   cdc-net
-  bns-net:
-    name:                                   bns-net
-  fec-net:
-    name:                                   fec-net
-  csc-net:
-    name:                                   csc-net
-  mdc-net:
-    name:                                   mdc-net
-  cks-net:
-    name:                                   cks-net
-  nss-net:
-    name:                                   nss-net
-  cac-net:
-    name:                                   cac-net
-  cts-net:
-    name:                                   cts-net
-  ros-net:
-    name:                                   ros-net
-  party-net:
-    name:                                   party-net
-  csrv-net:
-    name:                                   csrv-net
-  kafka-net:
-    name:                                   kafka-net
+  internal-net:
+    name:                                   internal-net
